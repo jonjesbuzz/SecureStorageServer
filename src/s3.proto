@@ -1,0 +1,67 @@
+syntax = "proto2";
+
+package com.jjemson.s3;
+
+option java_package = "com.jjemson.s3";
+option java_outer_classname = "S3Protocol";
+
+
+message S3Message {
+    extensions 1000 to max;
+
+    enum MessageType {
+        CheckinRequest = 1;
+        CheckinResponse = 2;
+        CheckoutRequest = 3;
+        CheckoutResponse = 4;
+        Login = 5;
+    }
+
+    required MessageType type = 1;
+}
+
+message Login {
+    extend S3Message {
+        optional Login login = 1005;
+    }
+    required string user = 1;
+}
+
+message CheckoutRequest {
+    extend S3Message {
+        optional CheckoutRequest co_request = 1003;
+    }
+    required string document_id = 1;
+}
+
+message CheckoutResponse {
+    extend S3Message {
+        optional CheckoutResponse co_response = 1004;
+    }
+    required bool success = 1;
+    optional bytes file_data = 2;
+}
+
+enum Security {
+    NONE = 0;
+    CONFIDENTIALITY = 1;
+    INTEGRITY = 2;
+    ALL = 4;
+}
+
+message CheckinRequest {
+    extend S3Message {
+        optional CheckinRequest ci_request = 1001;
+    }
+    required string document_id = 1;
+    required bytes file_data = 2;
+    required Security security = 3;
+}
+
+message CheckinResponse {
+    extend S3Message {
+        optional CheckinResponse ci_response = 1002;
+    }
+    required bool success = 1;
+    optional string reason = 2;
+}

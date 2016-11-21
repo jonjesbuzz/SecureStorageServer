@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.jjemson.s3.server.S3Server
+
