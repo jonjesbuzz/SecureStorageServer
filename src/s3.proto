@@ -14,17 +14,25 @@ message S3Message {
         CheckinResponse = 2;
         CheckoutRequest = 3;
         CheckoutResponse = 4;
-        Login = 5;
+        LoginRequest = 5;
+        LoginResponse = 6;
     }
 
     required MessageType type = 1;
 }
 
-message Login {
+message LoginRequest {
     extend S3Message {
-        optional Login login = 1005;
+        optional LoginRequest login = 1005;
     }
     required string user = 1;
+    required bytes clientCert = 2;
+}
+message LoginResponse {
+    extend S3Message {
+        optional LoginResponse login = 1006;
+    }
+    required bytes serverCert = 1;
 }
 
 message CheckoutRequest {

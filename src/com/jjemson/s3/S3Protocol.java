@@ -7,7 +7,8 @@ public final class S3Protocol {
   private S3Protocol() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
-    registry.add(com.jjemson.s3.S3Protocol.Login.login);
+    registry.add(com.jjemson.s3.S3Protocol.LoginRequest.login);
+    registry.add(com.jjemson.s3.S3Protocol.LoginResponse.login);
     registry.add(com.jjemson.s3.S3Protocol.CheckoutRequest.coRequest);
     registry.add(com.jjemson.s3.S3Protocol.CheckoutResponse.coResponse);
     registry.add(com.jjemson.s3.S3Protocol.CheckinRequest.ciRequest);
@@ -242,9 +243,13 @@ public final class S3Protocol {
        */
       CheckoutResponse(4),
       /**
-       * <code>Login = 5;</code>
+       * <code>LoginRequest = 5;</code>
        */
-      Login(5),
+      LoginRequest(5),
+      /**
+       * <code>LoginResponse = 6;</code>
+       */
+      LoginResponse(6),
       ;
 
       /**
@@ -264,9 +269,13 @@ public final class S3Protocol {
        */
       public static final int CheckoutResponse_VALUE = 4;
       /**
-       * <code>Login = 5;</code>
+       * <code>LoginRequest = 5;</code>
        */
-      public static final int Login_VALUE = 5;
+      public static final int LoginRequest_VALUE = 5;
+      /**
+       * <code>LoginResponse = 6;</code>
+       */
+      public static final int LoginResponse_VALUE = 6;
 
 
       public final int getNumber() {
@@ -287,7 +296,8 @@ public final class S3Protocol {
           case 2: return CheckinResponse;
           case 3: return CheckoutRequest;
           case 4: return CheckoutResponse;
-          case 5: return Login;
+          case 5: return LoginRequest;
+          case 6: return LoginResponse;
           default: return null;
         }
       }
@@ -769,8 +779,8 @@ public final class S3Protocol {
 
   }
 
-  public interface LoginOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.jjemson.s3.Login)
+  public interface LoginRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.jjemson.s3.LoginRequest)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -786,20 +796,30 @@ public final class S3Protocol {
      */
     com.google.protobuf.ByteString
         getUserBytes();
+
+    /**
+     * <code>required bytes clientCert = 2;</code>
+     */
+    boolean hasClientCert();
+    /**
+     * <code>required bytes clientCert = 2;</code>
+     */
+    com.google.protobuf.ByteString getClientCert();
   }
   /**
-   * Protobuf type {@code com.jjemson.s3.Login}
+   * Protobuf type {@code com.jjemson.s3.LoginRequest}
    */
-  public  static final class Login extends
+  public  static final class LoginRequest extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.jjemson.s3.Login)
-      LoginOrBuilder {
-    // Use Login.newBuilder() to construct.
-    private Login(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:com.jjemson.s3.LoginRequest)
+      LoginRequestOrBuilder {
+    // Use LoginRequest.newBuilder() to construct.
+    private LoginRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Login() {
+    private LoginRequest() {
       user_ = "";
+      clientCert_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -807,7 +827,7 @@ public final class S3Protocol {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Login(
+    private LoginRequest(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -836,6 +856,11 @@ public final class S3Protocol {
               user_ = bs;
               break;
             }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              clientCert_ = input.readBytes();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -850,14 +875,14 @@ public final class S3Protocol {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_Login_descriptor;
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_Login_fieldAccessorTable
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.jjemson.s3.S3Protocol.Login.class, com.jjemson.s3.S3Protocol.Login.Builder.class);
+              com.jjemson.s3.S3Protocol.LoginRequest.class, com.jjemson.s3.S3Protocol.LoginRequest.Builder.class);
     }
 
     private int bitField0_;
@@ -903,6 +928,21 @@ public final class S3Protocol {
       }
     }
 
+    public static final int CLIENTCERT_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString clientCert_;
+    /**
+     * <code>required bytes clientCert = 2;</code>
+     */
+    public boolean hasClientCert() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required bytes clientCert = 2;</code>
+     */
+    public com.google.protobuf.ByteString getClientCert() {
+      return clientCert_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -910,6 +950,10 @@ public final class S3Protocol {
       if (isInitialized == 0) return false;
 
       if (!hasUser()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasClientCert()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -922,6 +966,9 @@ public final class S3Protocol {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, user_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, clientCert_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -932,6 +979,10 @@ public final class S3Protocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, user_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, clientCert_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -944,16 +995,21 @@ public final class S3Protocol {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.jjemson.s3.S3Protocol.Login)) {
+      if (!(obj instanceof com.jjemson.s3.S3Protocol.LoginRequest)) {
         return super.equals(obj);
       }
-      com.jjemson.s3.S3Protocol.Login other = (com.jjemson.s3.S3Protocol.Login) obj;
+      com.jjemson.s3.S3Protocol.LoginRequest other = (com.jjemson.s3.S3Protocol.LoginRequest) obj;
 
       boolean result = true;
       result = result && (hasUser() == other.hasUser());
       if (hasUser()) {
         result = result && getUser()
             .equals(other.getUser());
+      }
+      result = result && (hasClientCert() == other.hasClientCert());
+      if (hasClientCert()) {
+        result = result && getClientCert()
+            .equals(other.getClientCert());
       }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
@@ -970,63 +1026,67 @@ public final class S3Protocol {
         hash = (37 * hash) + USER_FIELD_NUMBER;
         hash = (53 * hash) + getUser().hashCode();
       }
+      if (hasClientCert()) {
+        hash = (37 * hash) + CLIENTCERT_FIELD_NUMBER;
+        hash = (53 * hash) + getClientCert().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(byte[] data)
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(java.io.InputStream input)
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseDelimitedFrom(java.io.InputStream input)
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseDelimitedFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.jjemson.s3.S3Protocol.Login parseFrom(
+    public static com.jjemson.s3.S3Protocol.LoginRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1038,7 +1098,7 @@ public final class S3Protocol {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.jjemson.s3.S3Protocol.Login prototype) {
+    public static Builder newBuilder(com.jjemson.s3.S3Protocol.LoginRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1053,25 +1113,25 @@ public final class S3Protocol {
       return builder;
     }
     /**
-     * Protobuf type {@code com.jjemson.s3.Login}
+     * Protobuf type {@code com.jjemson.s3.LoginRequest}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.jjemson.s3.Login)
-        com.jjemson.s3.S3Protocol.LoginOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.jjemson.s3.LoginRequest)
+        com.jjemson.s3.S3Protocol.LoginRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_Login_descriptor;
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_Login_fieldAccessorTable
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.jjemson.s3.S3Protocol.Login.class, com.jjemson.s3.S3Protocol.Login.Builder.class);
+                com.jjemson.s3.S3Protocol.LoginRequest.class, com.jjemson.s3.S3Protocol.LoginRequest.Builder.class);
       }
 
-      // Construct using com.jjemson.s3.S3Protocol.Login.newBuilder()
+      // Construct using com.jjemson.s3.S3Protocol.LoginRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1090,34 +1150,40 @@ public final class S3Protocol {
         super.clear();
         user_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        clientCert_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_Login_descriptor;
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginRequest_descriptor;
       }
 
-      public com.jjemson.s3.S3Protocol.Login getDefaultInstanceForType() {
-        return com.jjemson.s3.S3Protocol.Login.getDefaultInstance();
+      public com.jjemson.s3.S3Protocol.LoginRequest getDefaultInstanceForType() {
+        return com.jjemson.s3.S3Protocol.LoginRequest.getDefaultInstance();
       }
 
-      public com.jjemson.s3.S3Protocol.Login build() {
-        com.jjemson.s3.S3Protocol.Login result = buildPartial();
+      public com.jjemson.s3.S3Protocol.LoginRequest build() {
+        com.jjemson.s3.S3Protocol.LoginRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.jjemson.s3.S3Protocol.Login buildPartial() {
-        com.jjemson.s3.S3Protocol.Login result = new com.jjemson.s3.S3Protocol.Login(this);
+      public com.jjemson.s3.S3Protocol.LoginRequest buildPartial() {
+        com.jjemson.s3.S3Protocol.LoginRequest result = new com.jjemson.s3.S3Protocol.LoginRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
         result.user_ = user_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.clientCert_ = clientCert_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1150,20 +1216,23 @@ public final class S3Protocol {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.jjemson.s3.S3Protocol.Login) {
-          return mergeFrom((com.jjemson.s3.S3Protocol.Login)other);
+        if (other instanceof com.jjemson.s3.S3Protocol.LoginRequest) {
+          return mergeFrom((com.jjemson.s3.S3Protocol.LoginRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.jjemson.s3.S3Protocol.Login other) {
-        if (other == com.jjemson.s3.S3Protocol.Login.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.jjemson.s3.S3Protocol.LoginRequest other) {
+        if (other == com.jjemson.s3.S3Protocol.LoginRequest.getDefaultInstance()) return this;
         if (other.hasUser()) {
           bitField0_ |= 0x00000001;
           user_ = other.user_;
           onChanged();
+        }
+        if (other.hasClientCert()) {
+          setClientCert(other.getClientCert());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1174,6 +1243,9 @@ public final class S3Protocol {
         if (!hasUser()) {
           return false;
         }
+        if (!hasClientCert()) {
+          return false;
+        }
         return true;
       }
 
@@ -1181,11 +1253,11 @@ public final class S3Protocol {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.jjemson.s3.S3Protocol.Login parsedMessage = null;
+        com.jjemson.s3.S3Protocol.LoginRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.jjemson.s3.S3Protocol.Login) e.getUnfinishedMessage();
+          parsedMessage = (com.jjemson.s3.S3Protocol.LoginRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1271,6 +1343,41 @@ public final class S3Protocol {
         onChanged();
         return this;
       }
+
+      private com.google.protobuf.ByteString clientCert_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes clientCert = 2;</code>
+       */
+      public boolean hasClientCert() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required bytes clientCert = 2;</code>
+       */
+      public com.google.protobuf.ByteString getClientCert() {
+        return clientCert_;
+      }
+      /**
+       * <code>required bytes clientCert = 2;</code>
+       */
+      public Builder setClientCert(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        clientCert_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes clientCert = 2;</code>
+       */
+      public Builder clearClientCert() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        clientCert_ = getDefaultInstance().getClientCert();
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -1282,39 +1389,39 @@ public final class S3Protocol {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.jjemson.s3.Login)
+      // @@protoc_insertion_point(builder_scope:com.jjemson.s3.LoginRequest)
     }
 
-    // @@protoc_insertion_point(class_scope:com.jjemson.s3.Login)
-    private static final com.jjemson.s3.S3Protocol.Login DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.jjemson.s3.LoginRequest)
+    private static final com.jjemson.s3.S3Protocol.LoginRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.jjemson.s3.S3Protocol.Login();
+      DEFAULT_INSTANCE = new com.jjemson.s3.S3Protocol.LoginRequest();
     }
 
-    public static com.jjemson.s3.S3Protocol.Login getDefaultInstance() {
+    public static com.jjemson.s3.S3Protocol.LoginRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Login>
-        PARSER = new com.google.protobuf.AbstractParser<Login>() {
-      public Login parsePartialFrom(
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<LoginRequest>
+        PARSER = new com.google.protobuf.AbstractParser<LoginRequest>() {
+      public LoginRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Login(input, extensionRegistry);
+          return new LoginRequest(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Login> parser() {
+    public static com.google.protobuf.Parser<LoginRequest> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Login> getParserForType() {
+    public com.google.protobuf.Parser<LoginRequest> getParserForType() {
       return PARSER;
     }
 
-    public com.jjemson.s3.S3Protocol.Login getDefaultInstanceForType() {
+    public com.jjemson.s3.S3Protocol.LoginRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1325,12 +1432,501 @@ public final class S3Protocol {
     public static final
       com.google.protobuf.GeneratedMessage.GeneratedExtension<
         com.jjemson.s3.S3Protocol.S3Message,
-        com.jjemson.s3.S3Protocol.Login> login = com.google.protobuf.GeneratedMessage
+        com.jjemson.s3.S3Protocol.LoginRequest> login = com.google.protobuf.GeneratedMessage
             .newMessageScopedGeneratedExtension(
-          com.jjemson.s3.S3Protocol.Login.getDefaultInstance(),
+          com.jjemson.s3.S3Protocol.LoginRequest.getDefaultInstance(),
           0,
-          com.jjemson.s3.S3Protocol.Login.class,
-          com.jjemson.s3.S3Protocol.Login.getDefaultInstance());
+          com.jjemson.s3.S3Protocol.LoginRequest.class,
+          com.jjemson.s3.S3Protocol.LoginRequest.getDefaultInstance());
+  }
+
+  public interface LoginResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.jjemson.s3.LoginResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required bytes serverCert = 1;</code>
+     */
+    boolean hasServerCert();
+    /**
+     * <code>required bytes serverCert = 1;</code>
+     */
+    com.google.protobuf.ByteString getServerCert();
+  }
+  /**
+   * Protobuf type {@code com.jjemson.s3.LoginResponse}
+   */
+  public  static final class LoginResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.jjemson.s3.LoginResponse)
+      LoginResponseOrBuilder {
+    // Use LoginResponse.newBuilder() to construct.
+    private LoginResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LoginResponse() {
+      serverCert_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LoginResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              serverCert_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.jjemson.s3.S3Protocol.LoginResponse.class, com.jjemson.s3.S3Protocol.LoginResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int SERVERCERT_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString serverCert_;
+    /**
+     * <code>required bytes serverCert = 1;</code>
+     */
+    public boolean hasServerCert() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bytes serverCert = 1;</code>
+     */
+    public com.google.protobuf.ByteString getServerCert() {
+      return serverCert_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasServerCert()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, serverCert_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, serverCert_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.jjemson.s3.S3Protocol.LoginResponse)) {
+        return super.equals(obj);
+      }
+      com.jjemson.s3.S3Protocol.LoginResponse other = (com.jjemson.s3.S3Protocol.LoginResponse) obj;
+
+      boolean result = true;
+      result = result && (hasServerCert() == other.hasServerCert());
+      if (hasServerCert()) {
+        result = result && getServerCert()
+            .equals(other.getServerCert());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasServerCert()) {
+        hash = (37 * hash) + SERVERCERT_FIELD_NUMBER;
+        hash = (53 * hash) + getServerCert().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.LoginResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.jjemson.s3.S3Protocol.LoginResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.jjemson.s3.LoginResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.jjemson.s3.LoginResponse)
+        com.jjemson.s3.S3Protocol.LoginResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.jjemson.s3.S3Protocol.LoginResponse.class, com.jjemson.s3.S3Protocol.LoginResponse.Builder.class);
+      }
+
+      // Construct using com.jjemson.s3.S3Protocol.LoginResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        serverCert_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_LoginResponse_descriptor;
+      }
+
+      public com.jjemson.s3.S3Protocol.LoginResponse getDefaultInstanceForType() {
+        return com.jjemson.s3.S3Protocol.LoginResponse.getDefaultInstance();
+      }
+
+      public com.jjemson.s3.S3Protocol.LoginResponse build() {
+        com.jjemson.s3.S3Protocol.LoginResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.jjemson.s3.S3Protocol.LoginResponse buildPartial() {
+        com.jjemson.s3.S3Protocol.LoginResponse result = new com.jjemson.s3.S3Protocol.LoginResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.serverCert_ = serverCert_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.jjemson.s3.S3Protocol.LoginResponse) {
+          return mergeFrom((com.jjemson.s3.S3Protocol.LoginResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.jjemson.s3.S3Protocol.LoginResponse other) {
+        if (other == com.jjemson.s3.S3Protocol.LoginResponse.getDefaultInstance()) return this;
+        if (other.hasServerCert()) {
+          setServerCert(other.getServerCert());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasServerCert()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.jjemson.s3.S3Protocol.LoginResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.jjemson.s3.S3Protocol.LoginResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.ByteString serverCert_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes serverCert = 1;</code>
+       */
+      public boolean hasServerCert() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bytes serverCert = 1;</code>
+       */
+      public com.google.protobuf.ByteString getServerCert() {
+        return serverCert_;
+      }
+      /**
+       * <code>required bytes serverCert = 1;</code>
+       */
+      public Builder setServerCert(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        serverCert_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes serverCert = 1;</code>
+       */
+      public Builder clearServerCert() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        serverCert_ = getDefaultInstance().getServerCert();
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.jjemson.s3.LoginResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.jjemson.s3.LoginResponse)
+    private static final com.jjemson.s3.S3Protocol.LoginResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.jjemson.s3.S3Protocol.LoginResponse();
+    }
+
+    public static com.jjemson.s3.S3Protocol.LoginResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<LoginResponse>
+        PARSER = new com.google.protobuf.AbstractParser<LoginResponse>() {
+      public LoginResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new LoginResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<LoginResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LoginResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.jjemson.s3.S3Protocol.LoginResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final int LOGIN_FIELD_NUMBER = 1006;
+    /**
+     * <code>extend .com.jjemson.s3.S3Message { ... }</code>
+     */
+    public static final
+      com.google.protobuf.GeneratedMessage.GeneratedExtension<
+        com.jjemson.s3.S3Protocol.S3Message,
+        com.jjemson.s3.S3Protocol.LoginResponse> login = com.google.protobuf.GeneratedMessage
+            .newMessageScopedGeneratedExtension(
+          com.jjemson.s3.S3Protocol.LoginResponse.getDefaultInstance(),
+          0,
+          com.jjemson.s3.S3Protocol.LoginResponse.class,
+          com.jjemson.s3.S3Protocol.LoginResponse.getDefaultInstance());
   }
 
   public interface CheckoutRequestOrBuilder extends
@@ -3897,10 +4493,15 @@ public final class S3Protocol {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_jjemson_s3_S3Message_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_jjemson_s3_Login_descriptor;
+    internal_static_com_jjemson_s3_LoginRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_jjemson_s3_Login_fieldAccessorTable;
+      internal_static_com_jjemson_s3_LoginRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_jjemson_s3_LoginResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_jjemson_s3_LoginResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_jjemson_s3_CheckoutRequest_descriptor;
   private static final 
@@ -3930,31 +4531,35 @@ public final class S3Protocol {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010s3.proto\022\016com.jjemson.s3\"\271\001\n\tS3Message" +
+      "\n\010s3.proto\022\016com.jjemson.s3\"\324\001\n\tS3Message" +
       "\0223\n\004type\030\001 \002(\0162%.com.jjemson.s3.S3Messag" +
-      "e.MessageType\"l\n\013MessageType\022\022\n\016CheckinR" +
-      "equest\020\001\022\023\n\017CheckinResponse\020\002\022\023\n\017Checkou" +
-      "tRequest\020\003\022\024\n\020CheckoutResponse\020\004\022\t\n\005Logi" +
-      "n\020\005*\t\010\350\007\020\200\200\200\200\002\"W\n\005Login\022\014\n\004user\030\001 \002(\t2@\n" +
-      "\005login\022\031.com.jjemson.s3.S3Message\030\355\007 \001(\013" +
-      "2\025.com.jjemson.s3.Login\"w\n\017CheckoutReque" +
-      "st\022\023\n\013document_id\030\001 \002(\t2O\n\nco_request\022\031." +
-      "com.jjemson.s3.S3Message\030\353\007 \001(\0132\037.com.jj",
-      "emson.s3.CheckoutRequest\"\211\001\n\020CheckoutRes" +
-      "ponse\022\017\n\007success\030\001 \002(\010\022\021\n\tfile_data\030\002 \001(" +
-      "\0142Q\n\013co_response\022\031.com.jjemson.s3.S3Mess" +
-      "age\030\354\007 \001(\0132 .com.jjemson.s3.CheckoutResp" +
-      "onse\"\264\001\n\016CheckinRequest\022\023\n\013document_id\030\001" +
-      " \002(\t\022\021\n\tfile_data\030\002 \002(\014\022*\n\010security\030\003 \002(" +
-      "\0162\030.com.jjemson.s3.Security2N\n\nci_reques" +
-      "t\022\031.com.jjemson.s3.S3Message\030\351\007 \001(\0132\036.co" +
-      "m.jjemson.s3.CheckinRequest\"\204\001\n\017CheckinR" +
-      "esponse\022\017\n\007success\030\001 \002(\010\022\016\n\006reason\030\002 \001(\t",
-      "2P\n\013ci_response\022\031.com.jjemson.s3.S3Messa" +
-      "ge\030\352\007 \001(\0132\037.com.jjemson.s3.CheckinRespon" +
-      "se*A\n\010Security\022\010\n\004NONE\020\000\022\023\n\017CONFIDENTIAL" +
-      "ITY\020\001\022\r\n\tINTEGRITY\020\002\022\007\n\003ALL\020\004B\034\n\016com.jje" +
-      "mson.s3B\nS3Protocol"
+      "e.MessageType\"\206\001\n\013MessageType\022\022\n\016Checkin" +
+      "Request\020\001\022\023\n\017CheckinResponse\020\002\022\023\n\017Checko" +
+      "utRequest\020\003\022\024\n\020CheckoutResponse\020\004\022\020\n\014Log" +
+      "inRequest\020\005\022\021\n\rLoginResponse\020\006*\t\010\350\007\020\200\200\200\200" +
+      "\002\"y\n\014LoginRequest\022\014\n\004user\030\001 \002(\t\022\022\n\nclien" +
+      "tCert\030\002 \002(\0142G\n\005login\022\031.com.jjemson.s3.S3" +
+      "Message\030\355\007 \001(\0132\034.com.jjemson.s3.LoginReq" +
+      "uest\"m\n\rLoginResponse\022\022\n\nserverCert\030\001 \002(",
+      "\0142H\n\005login\022\031.com.jjemson.s3.S3Message\030\356\007" +
+      " \001(\0132\035.com.jjemson.s3.LoginResponse\"w\n\017C" +
+      "heckoutRequest\022\023\n\013document_id\030\001 \002(\t2O\n\nc" +
+      "o_request\022\031.com.jjemson.s3.S3Message\030\353\007 " +
+      "\001(\0132\037.com.jjemson.s3.CheckoutRequest\"\211\001\n" +
+      "\020CheckoutResponse\022\017\n\007success\030\001 \002(\010\022\021\n\tfi" +
+      "le_data\030\002 \001(\0142Q\n\013co_response\022\031.com.jjems" +
+      "on.s3.S3Message\030\354\007 \001(\0132 .com.jjemson.s3." +
+      "CheckoutResponse\"\264\001\n\016CheckinRequest\022\023\n\013d" +
+      "ocument_id\030\001 \002(\t\022\021\n\tfile_data\030\002 \002(\014\022*\n\010s",
+      "ecurity\030\003 \002(\0162\030.com.jjemson.s3.Security2" +
+      "N\n\nci_request\022\031.com.jjemson.s3.S3Message" +
+      "\030\351\007 \001(\0132\036.com.jjemson.s3.CheckinRequest\"" +
+      "\204\001\n\017CheckinResponse\022\017\n\007success\030\001 \002(\010\022\016\n\006" +
+      "reason\030\002 \001(\t2P\n\013ci_response\022\031.com.jjemso" +
+      "n.s3.S3Message\030\352\007 \001(\0132\037.com.jjemson.s3.C" +
+      "heckinResponse*A\n\010Security\022\010\n\004NONE\020\000\022\023\n\017" +
+      "CONFIDENTIALITY\020\001\022\r\n\tINTEGRITY\020\002\022\007\n\003ALL\020" +
+      "\004B\034\n\016com.jjemson.s3B\nS3Protocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3974,32 +4579,38 @@ public final class S3Protocol {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_S3Message_descriptor,
         new java.lang.String[] { "Type", });
-    internal_static_com_jjemson_s3_Login_descriptor =
+    internal_static_com_jjemson_s3_LoginRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_com_jjemson_s3_Login_fieldAccessorTable = new
+    internal_static_com_jjemson_s3_LoginRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_jjemson_s3_Login_descriptor,
-        new java.lang.String[] { "User", });
-    internal_static_com_jjemson_s3_CheckoutRequest_descriptor =
+        internal_static_com_jjemson_s3_LoginRequest_descriptor,
+        new java.lang.String[] { "User", "ClientCert", });
+    internal_static_com_jjemson_s3_LoginResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_com_jjemson_s3_LoginResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_jjemson_s3_LoginResponse_descriptor,
+        new java.lang.String[] { "ServerCert", });
+    internal_static_com_jjemson_s3_CheckoutRequest_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_com_jjemson_s3_CheckoutRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckoutRequest_descriptor,
         new java.lang.String[] { "DocumentId", });
     internal_static_com_jjemson_s3_CheckoutResponse_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_com_jjemson_s3_CheckoutResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckoutResponse_descriptor,
         new java.lang.String[] { "Success", "FileData", });
     internal_static_com_jjemson_s3_CheckinRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_com_jjemson_s3_CheckinRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckinRequest_descriptor,
         new java.lang.String[] { "DocumentId", "FileData", "Security", });
     internal_static_com_jjemson_s3_CheckinResponse_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_com_jjemson_s3_CheckinResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckinResponse_descriptor,
