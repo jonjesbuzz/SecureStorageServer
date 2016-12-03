@@ -166,7 +166,7 @@ class S3File {
                 byte[] deciphered = getBytesFromInputStream(dataInput);
                 fileData = deciphered;
             }
-            if (securities.contains(Security.INTEGRITY) ||securities.contains(Security.ALL)) {
+            if (securities.contains(Security.INTEGRITY) || securities.contains(Security.ALL)) {
                 FileInputStream sigStream = new FileInputStream(sigFile);
                 KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
                 PublicKey publicKey = serverKeys.getPublic();
