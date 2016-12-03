@@ -148,6 +148,9 @@ public class S3Client {
         printInfo("Message:\n" + msg);
         try {
             CheckoutResponse response = msg.getExtension(CheckoutResponse.coResponse);
+            if (!response.getSuccess()) {
+                return null;
+            }
             printInfo("Response:\n" + response);
             File file = new File(filename);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -298,11 +301,11 @@ public class S3Client {
         }
         S3Client client = new S3Client(privateKey);
         client.connect(username, certificate);
-        client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.CONFIDENTIALITY);
+        client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
         File file = client.checkout("swap.c");
-        client.delegate("swap.c", "client2",120 * 60 * 60, false);
-        printInfo("" + file);
-        client.delete("swap.c");
+//        client.delegate("swap.c", "client2",120 * 60 * 60, false);
+//        printInfo("" + file);
+//        client.delete("swap.c");
         client.close();
     }
 

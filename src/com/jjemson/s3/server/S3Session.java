@@ -115,9 +115,16 @@ class S3Session implements Runnable {
                         file = S3FileManager.sharedInstance().checkoutFile(user, cor);
                     }
                     boolean successful = (file != null);
+                    byte[] fileData = null;
+                    if (successful) {
+                        fileData = file.getFileData();
+                    }
+                    if (fileData == null) {
+                        successful = false;
+                    }
                     CheckoutResponse.Builder responseBuilder = CheckoutResponse.newBuilder().setSuccess(successful);
                     if (successful) {
-                        responseBuilder.setFileData(ByteString.copyFrom(file.getFileData())).setSecurity(file.getFileSec());
+                        responseBuilder.setFileData(ByteString.copyFrom(fileData)).setSecurity(file.getFileSec());
                     }
                     CheckoutResponse response = responseBuilder.build();
                     printInfo("Response:\n" + response);

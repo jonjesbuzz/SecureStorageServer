@@ -10,10 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.security.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * S3File
@@ -55,12 +52,15 @@ class S3File {
                     nsae.printStackTrace();
                 }
             }
-            if (fileSec == Security.NONE) {
+            EnumSet<Security> securities = EnumSet.of(fileSec);
+            System.out.println(securities);
+            if (fileSec == Security.NONE || fileSec == Security.INTEGRITY) {
+                System.out.println("Writing file in the clear.");
                 fos.write(fileData);
-            } else if (fileSec == Security.ALL) {
-
-            } else if (fileSec == Security.CONFIDENTIALITY) {
+            }
+            if (securities.contains(Security.CONFIDENTIALITY) || securities.contains(Security.ALL)) {
                 try {
+                    System.out.println("Writing encrypted file.");
                     Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
                     c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncoded(), "AES"), ivspec);
                     CipherOutputStream cipherOutputStream = new CipherOutputStream(fos, c);
@@ -88,8 +88,26 @@ class S3File {
                     nsae.printStackTrace();
                 }
 
-            } else if (fileSec == Security.INTEGRITY) {
-
+            }
+            if (securities.contains(Security.INTEGRITY) || securities.contains(Security.ALL)) {
+                System.out.println("Generating signature for cleartext.");
+                try {
+                    KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
+                    Signature signature = Signature.getInstance("SHA256withRSA");
+                    signature.initSign(serverKeys.getPrivate());
+                    signature.update(fileData);
+                    byte[] signed = signature.sign();
+                    File sigFile = new File(this.file.getParentFile(), "keys/" + this.filename + ".sig");
+                    if (sigFile.exists()) {
+                        sigFile.delete();
+                    }
+                    FileOutputStream fileOutputStream = new FileOutputStream(sigFile);
+                    fileOutputStream.write(signed);
+                    fileOutputStream.close();
+                } catch (GeneralSecurityException gse) {
+                    System.err.println("Signature error.");
+                    gse.printStackTrace();
+                }
             }
             fos.close();
         } catch (IOException ioe) {
@@ -126,9 +144,11 @@ class S3File {
 
     public byte[] getFileData() {
         try {
+            EnumSet<Security> securities = EnumSet.of(fileSec);
             byte[] fileData = Files.readAllBytes(file.toPath());
             File keyFile = new File(this.file.getParentFile(), "keys/" + this.filename + ".key");
-            if (fileSec == Security.CONFIDENTIALITY) {
+            File sigFile = new File(this.file.getParentFile(), "keys/" + this.filename + ".sig");
+            if (securities.contains(Security.CONFIDENTIALITY) || securities.contains(Security.ALL)) {
                 ByteArrayInputStream dataStream = new ByteArrayInputStream(fileData);
                 FileInputStream keyStream = new FileInputStream(keyFile);
 
@@ -144,7 +164,21 @@ class S3File {
                 CipherInputStream dataInput = new CipherInputStream(dataStream, c);
 
                 byte[] deciphered = getBytesFromInputStream(dataInput);
-                return deciphered;
+                fileData = deciphered;
+            }
+            if (securities.contains(Security.INTEGRITY) ||securities.contains(Security.ALL)) {
+                FileInputStream sigStream = new FileInputStream(sigFile);
+                KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
+                PublicKey publicKey = serverKeys.getPublic();
+                byte[] sigBytes = getBytesFromInputStream(sigStream);
+                Signature signature = Signature.getInstance("SHA256withRSA");
+                signature.initVerify(publicKey);
+                signature.update(fileData);
+                boolean verified = signature.verify(sigBytes);
+                if (!verified) {
+                    System.err.println();
+                    return null;
+                }
             }
             return fileData;
         } catch (Exception e) {
