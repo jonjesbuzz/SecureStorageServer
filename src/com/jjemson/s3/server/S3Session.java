@@ -1,15 +1,14 @@
 package com.jjemson.s3.server;
 
 
-import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.ExtensionRegistry;
 import com.jjemson.s3.S3Protocol.*;
 import com.jjemson.s3.S3Security;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -35,6 +34,9 @@ class S3Session implements Runnable {
         registry.add(CheckoutRequest.coRequest);
         registry.add(LoginRequest.login);
         registry.add(LoginResponse.login);
+        registry.add(DelegationRequest.dRequest);
+        registry.add(DeleteRequest.delRequest);
+        registry.add(DeleteResponse.delResponse);
     }
 
     private void printInfo(String s) {
@@ -95,7 +97,58 @@ class S3Session implements Runnable {
                 if (msg.getType() == S3Message.MessageType.CheckinRequest) {
                     CheckinRequest cir = msg.getExtension(CheckinRequest.ciRequest);
                     printInfo("CheckIn:\n" + cir);
-                    S3FileManager.sharedInstance();
+                    S3FileManager.sharedInstance().checkInFile(this.user, cir);
+                    CheckinResponse response = CheckinResponse.newBuilder().setSuccess(true).build();
+                    S3Message respMsg = S3Message.newBuilder()
+                            .setType(S3Message.MessageType.CheckinResponse)
+                            .setExtension(CheckinResponse.ciResponse, response)
+                            .build();
+                    respMsg.writeDelimitedTo(this.socket.getOutputStream());
+                }
+                if (msg.getType() == S3Message.MessageType.CheckoutRequest) {
+                    CheckoutRequest cor = msg.getExtension(CheckoutRequest.coRequest);
+                    printInfo("Checkout:\n" + cor);
+                    S3File file;
+                    if (cor.hasOwner()) {
+                        file = S3FileManager.sharedInstance().checkoutDelegatedFile(user, cor.getOwner(), cor);
+                    } else {
+                        file = S3FileManager.sharedInstance().checkoutFile(user, cor);
+                    }
+                    boolean successful = (file != null);
+                    CheckoutResponse.Builder responseBuilder = CheckoutResponse.newBuilder().setSuccess(successful);
+                    if (successful) {
+                        responseBuilder.setFileData(ByteString.copyFrom(file.getFileData())).setSecurity(file.getFileSec());
+                    }
+                    CheckoutResponse response = responseBuilder.build();
+                    printInfo("Response:\n" + response);
+                    S3Message msg2 = S3Message.newBuilder()
+                            .setType(S3Message.MessageType.CheckoutResponse)
+                            .setExtension(CheckoutResponse.coResponse, response)
+                            .build();
+                    msg2.writeDelimitedTo(this.socket.getOutputStream());
+                }
+                if (msg.getType() == S3Message.MessageType.DelegationRequest) {
+                    DelegationRequest delegationRequest = msg.getExtension(DelegationRequest.dRequest);
+                    printInfo("Delegation request:\n" + delegationRequest);
+                    S3FileManager.sharedInstance().addDelegation(delegationRequest.getDocumentId(), user, delegationRequest.getClientUser(), delegationRequest.getDuration(), delegationRequest.getPropagate());
+                }
+                if (msg.getType() == S3Message.MessageType.DeleteRequest) {
+                    DeleteRequest deleteRequest = msg.getExtension(DeleteRequest.delRequest);
+                    boolean success;
+                    if (deleteRequest.hasDocumentOwner()) {
+                        success = S3FileManager.sharedInstance().deleteFile(deleteRequest.getDocumentOwner(), deleteRequest.getDocumentId());
+                    } else {
+                        success = S3FileManager.sharedInstance().deleteFile(user, deleteRequest.getDocumentId());
+                    }
+                    DeleteResponse response = DeleteResponse.newBuilder()
+                            .setSuccess(success)
+                            .build();
+                    S3Message msg2 = S3Message.newBuilder()
+                            .setType(S3Message.MessageType.DeleteResponse)
+                            .setExtension(DeleteResponse.delResponse, response)
+                            .build();
+                    msg2.writeDelimitedTo(this.socket.getOutputStream());
+
                 }
             }
         } catch (IOException ioe) {

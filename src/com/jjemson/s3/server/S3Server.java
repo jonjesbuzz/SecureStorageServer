@@ -1,14 +1,11 @@
 package com.jjemson.s3.server;
 
-import com.google.protobuf.ExtensionRegistry;
 import com.jjemson.s3.S3Security;
 
 import java.io.IOException;
-import java.net.*;
-import java.security.*;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.concurrent.ConcurrentHashMap;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.security.KeyPair;
 
 /**
  * S3Server
@@ -38,6 +35,7 @@ public class S3Server {
             this.serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
             this.socket = new ServerSocket(port);
             if (this.serverKeys == null) {
+                printError("Could not access server keys");
                 System.exit(1);
             }
         } catch (IOException ioe) {

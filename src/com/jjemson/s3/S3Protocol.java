@@ -13,6 +13,9 @@ public final class S3Protocol {
     registry.add(com.jjemson.s3.S3Protocol.CheckoutResponse.coResponse);
     registry.add(com.jjemson.s3.S3Protocol.CheckinRequest.ciRequest);
     registry.add(com.jjemson.s3.S3Protocol.CheckinResponse.ciResponse);
+    registry.add(com.jjemson.s3.S3Protocol.DelegationRequest.dRequest);
+    registry.add(com.jjemson.s3.S3Protocol.DeleteRequest.delRequest);
+    registry.add(com.jjemson.s3.S3Protocol.DeleteResponse.delResponse);
   }
 
   public static void registerAllExtensions(
@@ -250,6 +253,18 @@ public final class S3Protocol {
        * <code>LoginResponse = 6;</code>
        */
       LoginResponse(6),
+      /**
+       * <code>DelegationRequest = 7;</code>
+       */
+      DelegationRequest(7),
+      /**
+       * <code>DeleteRequest = 9;</code>
+       */
+      DeleteRequest(9),
+      /**
+       * <code>DeleteResponse = 10;</code>
+       */
+      DeleteResponse(10),
       ;
 
       /**
@@ -276,6 +291,18 @@ public final class S3Protocol {
        * <code>LoginResponse = 6;</code>
        */
       public static final int LoginResponse_VALUE = 6;
+      /**
+       * <code>DelegationRequest = 7;</code>
+       */
+      public static final int DelegationRequest_VALUE = 7;
+      /**
+       * <code>DeleteRequest = 9;</code>
+       */
+      public static final int DeleteRequest_VALUE = 9;
+      /**
+       * <code>DeleteResponse = 10;</code>
+       */
+      public static final int DeleteResponse_VALUE = 10;
 
 
       public final int getNumber() {
@@ -298,6 +325,9 @@ public final class S3Protocol {
           case 4: return CheckoutResponse;
           case 5: return LoginRequest;
           case 6: return LoginResponse;
+          case 7: return DelegationRequest;
+          case 9: return DeleteRequest;
+          case 10: return DeleteResponse;
           default: return null;
         }
       }
@@ -1946,6 +1976,20 @@ public final class S3Protocol {
      */
     com.google.protobuf.ByteString
         getDocumentIdBytes();
+
+    /**
+     * <code>optional string owner = 2;</code>
+     */
+    boolean hasOwner();
+    /**
+     * <code>optional string owner = 2;</code>
+     */
+    java.lang.String getOwner();
+    /**
+     * <code>optional string owner = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getOwnerBytes();
   }
   /**
    * Protobuf type {@code com.jjemson.s3.CheckoutRequest}
@@ -1960,6 +2004,7 @@ public final class S3Protocol {
     }
     private CheckoutRequest() {
       documentId_ = "";
+      owner_ = "";
     }
 
     @java.lang.Override
@@ -1994,6 +2039,12 @@ public final class S3Protocol {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
               documentId_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              owner_ = bs;
               break;
             }
           }
@@ -2063,6 +2114,48 @@ public final class S3Protocol {
       }
     }
 
+    public static final int OWNER_FIELD_NUMBER = 2;
+    private volatile java.lang.Object owner_;
+    /**
+     * <code>optional string owner = 2;</code>
+     */
+    public boolean hasOwner() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string owner = 2;</code>
+     */
+    public java.lang.String getOwner() {
+      java.lang.Object ref = owner_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          owner_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string owner = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getOwnerBytes() {
+      java.lang.Object ref = owner_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        owner_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2082,6 +2175,9 @@ public final class S3Protocol {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, documentId_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, owner_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2092,6 +2188,9 @@ public final class S3Protocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, documentId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, owner_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2115,6 +2214,11 @@ public final class S3Protocol {
         result = result && getDocumentId()
             .equals(other.getDocumentId());
       }
+      result = result && (hasOwner() == other.hasOwner());
+      if (hasOwner()) {
+        result = result && getOwner()
+            .equals(other.getOwner());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -2129,6 +2233,10 @@ public final class S3Protocol {
       if (hasDocumentId()) {
         hash = (37 * hash) + DOCUMENT_ID_FIELD_NUMBER;
         hash = (53 * hash) + getDocumentId().hashCode();
+      }
+      if (hasOwner()) {
+        hash = (37 * hash) + OWNER_FIELD_NUMBER;
+        hash = (53 * hash) + getOwner().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2250,6 +2358,8 @@ public final class S3Protocol {
         super.clear();
         documentId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        owner_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -2278,6 +2388,10 @@ public final class S3Protocol {
           to_bitField0_ |= 0x00000001;
         }
         result.documentId_ = documentId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.owner_ = owner_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2323,6 +2437,11 @@ public final class S3Protocol {
         if (other.hasDocumentId()) {
           bitField0_ |= 0x00000001;
           documentId_ = other.documentId_;
+          onChanged();
+        }
+        if (other.hasOwner()) {
+          bitField0_ |= 0x00000002;
+          owner_ = other.owner_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -2431,6 +2550,82 @@ public final class S3Protocol {
         onChanged();
         return this;
       }
+
+      private java.lang.Object owner_ = "";
+      /**
+       * <code>optional string owner = 2;</code>
+       */
+      public boolean hasOwner() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string owner = 2;</code>
+       */
+      public java.lang.String getOwner() {
+        java.lang.Object ref = owner_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            owner_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string owner = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getOwnerBytes() {
+        java.lang.Object ref = owner_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          owner_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string owner = 2;</code>
+       */
+      public Builder setOwner(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        owner_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string owner = 2;</code>
+       */
+      public Builder clearOwner() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        owner_ = getDefaultInstance().getOwner();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string owner = 2;</code>
+       */
+      public Builder setOwnerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        owner_ = value;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -2507,11 +2702,20 @@ public final class S3Protocol {
     boolean getSuccess();
 
     /**
-     * <code>optional bytes file_data = 2;</code>
+     * <code>optional .com.jjemson.s3.Security security = 2;</code>
+     */
+    boolean hasSecurity();
+    /**
+     * <code>optional .com.jjemson.s3.Security security = 2;</code>
+     */
+    com.jjemson.s3.S3Protocol.Security getSecurity();
+
+    /**
+     * <code>optional bytes file_data = 3;</code>
      */
     boolean hasFileData();
     /**
-     * <code>optional bytes file_data = 2;</code>
+     * <code>optional bytes file_data = 3;</code>
      */
     com.google.protobuf.ByteString getFileData();
   }
@@ -2528,6 +2732,7 @@ public final class S3Protocol {
     }
     private CheckoutResponse() {
       success_ = false;
+      security_ = 0;
       fileData_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -2564,8 +2769,19 @@ public final class S3Protocol {
               success_ = input.readBool();
               break;
             }
-            case 18: {
-              bitField0_ |= 0x00000002;
+            case 16: {
+              int rawValue = input.readEnum();
+              com.jjemson.s3.S3Protocol.Security value = com.jjemson.s3.S3Protocol.Security.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(2, rawValue);
+              } else {
+                bitField0_ |= 0x00000002;
+                security_ = rawValue;
+              }
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
               fileData_ = input.readBytes();
               break;
             }
@@ -2609,16 +2825,32 @@ public final class S3Protocol {
       return success_;
     }
 
-    public static final int FILE_DATA_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString fileData_;
+    public static final int SECURITY_FIELD_NUMBER = 2;
+    private int security_;
     /**
-     * <code>optional bytes file_data = 2;</code>
+     * <code>optional .com.jjemson.s3.Security security = 2;</code>
      */
-    public boolean hasFileData() {
+    public boolean hasSecurity() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional bytes file_data = 2;</code>
+     * <code>optional .com.jjemson.s3.Security security = 2;</code>
+     */
+    public com.jjemson.s3.S3Protocol.Security getSecurity() {
+      com.jjemson.s3.S3Protocol.Security result = com.jjemson.s3.S3Protocol.Security.valueOf(security_);
+      return result == null ? com.jjemson.s3.S3Protocol.Security.NONE : result;
+    }
+
+    public static final int FILE_DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString fileData_;
+    /**
+     * <code>optional bytes file_data = 3;</code>
+     */
+    public boolean hasFileData() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional bytes file_data = 3;</code>
      */
     public com.google.protobuf.ByteString getFileData() {
       return fileData_;
@@ -2644,7 +2876,10 @@ public final class S3Protocol {
         output.writeBool(1, success_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, fileData_);
+        output.writeEnum(2, security_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, fileData_);
       }
       unknownFields.writeTo(output);
     }
@@ -2660,7 +2895,11 @@ public final class S3Protocol {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, fileData_);
+          .computeEnumSize(2, security_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, fileData_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2684,6 +2923,10 @@ public final class S3Protocol {
         result = result && (getSuccess()
             == other.getSuccess());
       }
+      result = result && (hasSecurity() == other.hasSecurity());
+      if (hasSecurity()) {
+        result = result && security_ == other.security_;
+      }
       result = result && (hasFileData() == other.hasFileData());
       if (hasFileData()) {
         result = result && getFileData()
@@ -2704,6 +2947,10 @@ public final class S3Protocol {
         hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getSuccess());
+      }
+      if (hasSecurity()) {
+        hash = (37 * hash) + SECURITY_FIELD_NUMBER;
+        hash = (53 * hash) + security_;
       }
       if (hasFileData()) {
         hash = (37 * hash) + FILE_DATA_FIELD_NUMBER;
@@ -2829,8 +3076,10 @@ public final class S3Protocol {
         super.clear();
         success_ = false;
         bitField0_ = (bitField0_ & ~0x00000001);
-        fileData_ = com.google.protobuf.ByteString.EMPTY;
+        security_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        fileData_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -2861,6 +3110,10 @@ public final class S3Protocol {
         result.success_ = success_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
+        }
+        result.security_ = security_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
         }
         result.fileData_ = fileData_;
         result.bitField0_ = to_bitField0_;
@@ -2907,6 +3160,9 @@ public final class S3Protocol {
         if (other == com.jjemson.s3.S3Protocol.CheckoutResponse.getDefaultInstance()) return this;
         if (other.hasSuccess()) {
           setSuccess(other.getSuccess());
+        }
+        if (other.hasSecurity()) {
+          setSecurity(other.getSecurity());
         }
         if (other.hasFileData()) {
           setFileData(other.getFileData());
@@ -2974,36 +3230,72 @@ public final class S3Protocol {
         return this;
       }
 
-      private com.google.protobuf.ByteString fileData_ = com.google.protobuf.ByteString.EMPTY;
+      private int security_ = 0;
       /**
-       * <code>optional bytes file_data = 2;</code>
+       * <code>optional .com.jjemson.s3.Security security = 2;</code>
        */
-      public boolean hasFileData() {
+      public boolean hasSecurity() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional bytes file_data = 2;</code>
+       * <code>optional .com.jjemson.s3.Security security = 2;</code>
+       */
+      public com.jjemson.s3.S3Protocol.Security getSecurity() {
+        com.jjemson.s3.S3Protocol.Security result = com.jjemson.s3.S3Protocol.Security.valueOf(security_);
+        return result == null ? com.jjemson.s3.S3Protocol.Security.NONE : result;
+      }
+      /**
+       * <code>optional .com.jjemson.s3.Security security = 2;</code>
+       */
+      public Builder setSecurity(com.jjemson.s3.S3Protocol.Security value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        security_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.jjemson.s3.Security security = 2;</code>
+       */
+      public Builder clearSecurity() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        security_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString fileData_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes file_data = 3;</code>
+       */
+      public boolean hasFileData() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bytes file_data = 3;</code>
        */
       public com.google.protobuf.ByteString getFileData() {
         return fileData_;
       }
       /**
-       * <code>optional bytes file_data = 2;</code>
+       * <code>optional bytes file_data = 3;</code>
        */
       public Builder setFileData(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  bitField0_ |= 0x00000004;
         fileData_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bytes file_data = 2;</code>
+       * <code>optional bytes file_data = 3;</code>
        */
       public Builder clearFileData() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         fileData_ = getDefaultInstance().getFileData();
         onChanged();
         return this;
@@ -4487,6 +4779,2312 @@ public final class S3Protocol {
           com.jjemson.s3.S3Protocol.CheckinResponse.getDefaultInstance());
   }
 
+  public interface DelegationRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.jjemson.s3.DelegationRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    boolean hasDocumentId();
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    java.lang.String getDocumentId();
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getDocumentIdBytes();
+
+    /**
+     * <code>required string client_user = 2;</code>
+     */
+    boolean hasClientUser();
+    /**
+     * <code>required string client_user = 2;</code>
+     */
+    java.lang.String getClientUser();
+    /**
+     * <code>required string client_user = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getClientUserBytes();
+
+    /**
+     * <code>required int32 duration = 3;</code>
+     */
+    boolean hasDuration();
+    /**
+     * <code>required int32 duration = 3;</code>
+     */
+    int getDuration();
+
+    /**
+     * <code>required bool propagate = 4;</code>
+     */
+    boolean hasPropagate();
+    /**
+     * <code>required bool propagate = 4;</code>
+     */
+    boolean getPropagate();
+  }
+  /**
+   * Protobuf type {@code com.jjemson.s3.DelegationRequest}
+   */
+  public  static final class DelegationRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.jjemson.s3.DelegationRequest)
+      DelegationRequestOrBuilder {
+    // Use DelegationRequest.newBuilder() to construct.
+    private DelegationRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DelegationRequest() {
+      documentId_ = "";
+      clientUser_ = "";
+      duration_ = 0;
+      propagate_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DelegationRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              documentId_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              clientUser_ = bs;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              duration_ = input.readInt32();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              propagate_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DelegationRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DelegationRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.jjemson.s3.S3Protocol.DelegationRequest.class, com.jjemson.s3.S3Protocol.DelegationRequest.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int DOCUMENT_ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object documentId_;
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    public boolean hasDocumentId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    public java.lang.String getDocumentId() {
+      java.lang.Object ref = documentId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          documentId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDocumentIdBytes() {
+      java.lang.Object ref = documentId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        documentId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CLIENT_USER_FIELD_NUMBER = 2;
+    private volatile java.lang.Object clientUser_;
+    /**
+     * <code>required string client_user = 2;</code>
+     */
+    public boolean hasClientUser() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string client_user = 2;</code>
+     */
+    public java.lang.String getClientUser() {
+      java.lang.Object ref = clientUser_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          clientUser_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string client_user = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getClientUserBytes() {
+      java.lang.Object ref = clientUser_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        clientUser_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DURATION_FIELD_NUMBER = 3;
+    private int duration_;
+    /**
+     * <code>required int32 duration = 3;</code>
+     */
+    public boolean hasDuration() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required int32 duration = 3;</code>
+     */
+    public int getDuration() {
+      return duration_;
+    }
+
+    public static final int PROPAGATE_FIELD_NUMBER = 4;
+    private boolean propagate_;
+    /**
+     * <code>required bool propagate = 4;</code>
+     */
+    public boolean hasPropagate() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required bool propagate = 4;</code>
+     */
+    public boolean getPropagate() {
+      return propagate_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasDocumentId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasClientUser()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasDuration()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasPropagate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, documentId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, clientUser_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, duration_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(4, propagate_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, documentId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, clientUser_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, duration_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, propagate_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.jjemson.s3.S3Protocol.DelegationRequest)) {
+        return super.equals(obj);
+      }
+      com.jjemson.s3.S3Protocol.DelegationRequest other = (com.jjemson.s3.S3Protocol.DelegationRequest) obj;
+
+      boolean result = true;
+      result = result && (hasDocumentId() == other.hasDocumentId());
+      if (hasDocumentId()) {
+        result = result && getDocumentId()
+            .equals(other.getDocumentId());
+      }
+      result = result && (hasClientUser() == other.hasClientUser());
+      if (hasClientUser()) {
+        result = result && getClientUser()
+            .equals(other.getClientUser());
+      }
+      result = result && (hasDuration() == other.hasDuration());
+      if (hasDuration()) {
+        result = result && (getDuration()
+            == other.getDuration());
+      }
+      result = result && (hasPropagate() == other.hasPropagate());
+      if (hasPropagate()) {
+        result = result && (getPropagate()
+            == other.getPropagate());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasDocumentId()) {
+        hash = (37 * hash) + DOCUMENT_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getDocumentId().hashCode();
+      }
+      if (hasClientUser()) {
+        hash = (37 * hash) + CLIENT_USER_FIELD_NUMBER;
+        hash = (53 * hash) + getClientUser().hashCode();
+      }
+      if (hasDuration()) {
+        hash = (37 * hash) + DURATION_FIELD_NUMBER;
+        hash = (53 * hash) + getDuration();
+      }
+      if (hasPropagate()) {
+        hash = (37 * hash) + PROPAGATE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getPropagate());
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DelegationRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.jjemson.s3.S3Protocol.DelegationRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.jjemson.s3.DelegationRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.jjemson.s3.DelegationRequest)
+        com.jjemson.s3.S3Protocol.DelegationRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DelegationRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DelegationRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.jjemson.s3.S3Protocol.DelegationRequest.class, com.jjemson.s3.S3Protocol.DelegationRequest.Builder.class);
+      }
+
+      // Construct using com.jjemson.s3.S3Protocol.DelegationRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        documentId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        clientUser_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        duration_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        propagate_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DelegationRequest_descriptor;
+      }
+
+      public com.jjemson.s3.S3Protocol.DelegationRequest getDefaultInstanceForType() {
+        return com.jjemson.s3.S3Protocol.DelegationRequest.getDefaultInstance();
+      }
+
+      public com.jjemson.s3.S3Protocol.DelegationRequest build() {
+        com.jjemson.s3.S3Protocol.DelegationRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.jjemson.s3.S3Protocol.DelegationRequest buildPartial() {
+        com.jjemson.s3.S3Protocol.DelegationRequest result = new com.jjemson.s3.S3Protocol.DelegationRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.documentId_ = documentId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.clientUser_ = clientUser_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.duration_ = duration_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.propagate_ = propagate_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.jjemson.s3.S3Protocol.DelegationRequest) {
+          return mergeFrom((com.jjemson.s3.S3Protocol.DelegationRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.jjemson.s3.S3Protocol.DelegationRequest other) {
+        if (other == com.jjemson.s3.S3Protocol.DelegationRequest.getDefaultInstance()) return this;
+        if (other.hasDocumentId()) {
+          bitField0_ |= 0x00000001;
+          documentId_ = other.documentId_;
+          onChanged();
+        }
+        if (other.hasClientUser()) {
+          bitField0_ |= 0x00000002;
+          clientUser_ = other.clientUser_;
+          onChanged();
+        }
+        if (other.hasDuration()) {
+          setDuration(other.getDuration());
+        }
+        if (other.hasPropagate()) {
+          setPropagate(other.getPropagate());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasDocumentId()) {
+          return false;
+        }
+        if (!hasClientUser()) {
+          return false;
+        }
+        if (!hasDuration()) {
+          return false;
+        }
+        if (!hasPropagate()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.jjemson.s3.S3Protocol.DelegationRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.jjemson.s3.S3Protocol.DelegationRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object documentId_ = "";
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public boolean hasDocumentId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public java.lang.String getDocumentId() {
+        java.lang.Object ref = documentId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            documentId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDocumentIdBytes() {
+        java.lang.Object ref = documentId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          documentId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public Builder setDocumentId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        documentId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public Builder clearDocumentId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        documentId_ = getDefaultInstance().getDocumentId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public Builder setDocumentIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        documentId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object clientUser_ = "";
+      /**
+       * <code>required string client_user = 2;</code>
+       */
+      public boolean hasClientUser() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string client_user = 2;</code>
+       */
+      public java.lang.String getClientUser() {
+        java.lang.Object ref = clientUser_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            clientUser_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string client_user = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getClientUserBytes() {
+        java.lang.Object ref = clientUser_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          clientUser_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string client_user = 2;</code>
+       */
+      public Builder setClientUser(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        clientUser_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string client_user = 2;</code>
+       */
+      public Builder clearClientUser() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        clientUser_ = getDefaultInstance().getClientUser();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string client_user = 2;</code>
+       */
+      public Builder setClientUserBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        clientUser_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int duration_ ;
+      /**
+       * <code>required int32 duration = 3;</code>
+       */
+      public boolean hasDuration() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required int32 duration = 3;</code>
+       */
+      public int getDuration() {
+        return duration_;
+      }
+      /**
+       * <code>required int32 duration = 3;</code>
+       */
+      public Builder setDuration(int value) {
+        bitField0_ |= 0x00000004;
+        duration_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 duration = 3;</code>
+       */
+      public Builder clearDuration() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        duration_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean propagate_ ;
+      /**
+       * <code>required bool propagate = 4;</code>
+       */
+      public boolean hasPropagate() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required bool propagate = 4;</code>
+       */
+      public boolean getPropagate() {
+        return propagate_;
+      }
+      /**
+       * <code>required bool propagate = 4;</code>
+       */
+      public Builder setPropagate(boolean value) {
+        bitField0_ |= 0x00000008;
+        propagate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool propagate = 4;</code>
+       */
+      public Builder clearPropagate() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        propagate_ = false;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.jjemson.s3.DelegationRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.jjemson.s3.DelegationRequest)
+    private static final com.jjemson.s3.S3Protocol.DelegationRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.jjemson.s3.S3Protocol.DelegationRequest();
+    }
+
+    public static com.jjemson.s3.S3Protocol.DelegationRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<DelegationRequest>
+        PARSER = new com.google.protobuf.AbstractParser<DelegationRequest>() {
+      public DelegationRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new DelegationRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DelegationRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DelegationRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.jjemson.s3.S3Protocol.DelegationRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final int D_REQUEST_FIELD_NUMBER = 1007;
+    /**
+     * <code>extend .com.jjemson.s3.S3Message { ... }</code>
+     */
+    public static final
+      com.google.protobuf.GeneratedMessage.GeneratedExtension<
+        com.jjemson.s3.S3Protocol.S3Message,
+        com.jjemson.s3.S3Protocol.DelegationRequest> dRequest = com.google.protobuf.GeneratedMessage
+            .newMessageScopedGeneratedExtension(
+          com.jjemson.s3.S3Protocol.DelegationRequest.getDefaultInstance(),
+          0,
+          com.jjemson.s3.S3Protocol.DelegationRequest.class,
+          com.jjemson.s3.S3Protocol.DelegationRequest.getDefaultInstance());
+  }
+
+  public interface DeleteRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.jjemson.s3.DeleteRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    boolean hasDocumentId();
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    java.lang.String getDocumentId();
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getDocumentIdBytes();
+
+    /**
+     * <code>optional string document_owner = 2;</code>
+     */
+    boolean hasDocumentOwner();
+    /**
+     * <code>optional string document_owner = 2;</code>
+     */
+    java.lang.String getDocumentOwner();
+    /**
+     * <code>optional string document_owner = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getDocumentOwnerBytes();
+  }
+  /**
+   * Protobuf type {@code com.jjemson.s3.DeleteRequest}
+   */
+  public  static final class DeleteRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.jjemson.s3.DeleteRequest)
+      DeleteRequestOrBuilder {
+    // Use DeleteRequest.newBuilder() to construct.
+    private DeleteRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DeleteRequest() {
+      documentId_ = "";
+      documentOwner_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DeleteRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              documentId_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              documentOwner_ = bs;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.jjemson.s3.S3Protocol.DeleteRequest.class, com.jjemson.s3.S3Protocol.DeleteRequest.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int DOCUMENT_ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object documentId_;
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    public boolean hasDocumentId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    public java.lang.String getDocumentId() {
+      java.lang.Object ref = documentId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          documentId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string document_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDocumentIdBytes() {
+      java.lang.Object ref = documentId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        documentId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DOCUMENT_OWNER_FIELD_NUMBER = 2;
+    private volatile java.lang.Object documentOwner_;
+    /**
+     * <code>optional string document_owner = 2;</code>
+     */
+    public boolean hasDocumentOwner() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string document_owner = 2;</code>
+     */
+    public java.lang.String getDocumentOwner() {
+      java.lang.Object ref = documentOwner_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          documentOwner_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string document_owner = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDocumentOwnerBytes() {
+      java.lang.Object ref = documentOwner_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        documentOwner_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasDocumentId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, documentId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, documentOwner_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, documentId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, documentOwner_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.jjemson.s3.S3Protocol.DeleteRequest)) {
+        return super.equals(obj);
+      }
+      com.jjemson.s3.S3Protocol.DeleteRequest other = (com.jjemson.s3.S3Protocol.DeleteRequest) obj;
+
+      boolean result = true;
+      result = result && (hasDocumentId() == other.hasDocumentId());
+      if (hasDocumentId()) {
+        result = result && getDocumentId()
+            .equals(other.getDocumentId());
+      }
+      result = result && (hasDocumentOwner() == other.hasDocumentOwner());
+      if (hasDocumentOwner()) {
+        result = result && getDocumentOwner()
+            .equals(other.getDocumentOwner());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasDocumentId()) {
+        hash = (37 * hash) + DOCUMENT_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getDocumentId().hashCode();
+      }
+      if (hasDocumentOwner()) {
+        hash = (37 * hash) + DOCUMENT_OWNER_FIELD_NUMBER;
+        hash = (53 * hash) + getDocumentOwner().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.jjemson.s3.S3Protocol.DeleteRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.jjemson.s3.DeleteRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.jjemson.s3.DeleteRequest)
+        com.jjemson.s3.S3Protocol.DeleteRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.jjemson.s3.S3Protocol.DeleteRequest.class, com.jjemson.s3.S3Protocol.DeleteRequest.Builder.class);
+      }
+
+      // Construct using com.jjemson.s3.S3Protocol.DeleteRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        documentId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        documentOwner_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteRequest_descriptor;
+      }
+
+      public com.jjemson.s3.S3Protocol.DeleteRequest getDefaultInstanceForType() {
+        return com.jjemson.s3.S3Protocol.DeleteRequest.getDefaultInstance();
+      }
+
+      public com.jjemson.s3.S3Protocol.DeleteRequest build() {
+        com.jjemson.s3.S3Protocol.DeleteRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.jjemson.s3.S3Protocol.DeleteRequest buildPartial() {
+        com.jjemson.s3.S3Protocol.DeleteRequest result = new com.jjemson.s3.S3Protocol.DeleteRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.documentId_ = documentId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.documentOwner_ = documentOwner_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.jjemson.s3.S3Protocol.DeleteRequest) {
+          return mergeFrom((com.jjemson.s3.S3Protocol.DeleteRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.jjemson.s3.S3Protocol.DeleteRequest other) {
+        if (other == com.jjemson.s3.S3Protocol.DeleteRequest.getDefaultInstance()) return this;
+        if (other.hasDocumentId()) {
+          bitField0_ |= 0x00000001;
+          documentId_ = other.documentId_;
+          onChanged();
+        }
+        if (other.hasDocumentOwner()) {
+          bitField0_ |= 0x00000002;
+          documentOwner_ = other.documentOwner_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasDocumentId()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.jjemson.s3.S3Protocol.DeleteRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.jjemson.s3.S3Protocol.DeleteRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object documentId_ = "";
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public boolean hasDocumentId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public java.lang.String getDocumentId() {
+        java.lang.Object ref = documentId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            documentId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDocumentIdBytes() {
+        java.lang.Object ref = documentId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          documentId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public Builder setDocumentId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        documentId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public Builder clearDocumentId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        documentId_ = getDefaultInstance().getDocumentId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string document_id = 1;</code>
+       */
+      public Builder setDocumentIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        documentId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object documentOwner_ = "";
+      /**
+       * <code>optional string document_owner = 2;</code>
+       */
+      public boolean hasDocumentOwner() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string document_owner = 2;</code>
+       */
+      public java.lang.String getDocumentOwner() {
+        java.lang.Object ref = documentOwner_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            documentOwner_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string document_owner = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDocumentOwnerBytes() {
+        java.lang.Object ref = documentOwner_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          documentOwner_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string document_owner = 2;</code>
+       */
+      public Builder setDocumentOwner(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        documentOwner_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string document_owner = 2;</code>
+       */
+      public Builder clearDocumentOwner() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        documentOwner_ = getDefaultInstance().getDocumentOwner();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string document_owner = 2;</code>
+       */
+      public Builder setDocumentOwnerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        documentOwner_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.jjemson.s3.DeleteRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.jjemson.s3.DeleteRequest)
+    private static final com.jjemson.s3.S3Protocol.DeleteRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.jjemson.s3.S3Protocol.DeleteRequest();
+    }
+
+    public static com.jjemson.s3.S3Protocol.DeleteRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<DeleteRequest>
+        PARSER = new com.google.protobuf.AbstractParser<DeleteRequest>() {
+      public DeleteRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new DeleteRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DeleteRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DeleteRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.jjemson.s3.S3Protocol.DeleteRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final int DEL_REQUEST_FIELD_NUMBER = 1009;
+    /**
+     * <code>extend .com.jjemson.s3.S3Message { ... }</code>
+     */
+    public static final
+      com.google.protobuf.GeneratedMessage.GeneratedExtension<
+        com.jjemson.s3.S3Protocol.S3Message,
+        com.jjemson.s3.S3Protocol.DeleteRequest> delRequest = com.google.protobuf.GeneratedMessage
+            .newMessageScopedGeneratedExtension(
+          com.jjemson.s3.S3Protocol.DeleteRequest.getDefaultInstance(),
+          0,
+          com.jjemson.s3.S3Protocol.DeleteRequest.class,
+          com.jjemson.s3.S3Protocol.DeleteRequest.getDefaultInstance());
+  }
+
+  public interface DeleteResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.jjemson.s3.DeleteResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required bool success = 1;</code>
+     */
+    boolean hasSuccess();
+    /**
+     * <code>required bool success = 1;</code>
+     */
+    boolean getSuccess();
+
+    /**
+     * <code>optional string reason = 2;</code>
+     */
+    boolean hasReason();
+    /**
+     * <code>optional string reason = 2;</code>
+     */
+    java.lang.String getReason();
+    /**
+     * <code>optional string reason = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getReasonBytes();
+  }
+  /**
+   * Protobuf type {@code com.jjemson.s3.DeleteResponse}
+   */
+  public  static final class DeleteResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.jjemson.s3.DeleteResponse)
+      DeleteResponseOrBuilder {
+    // Use DeleteResponse.newBuilder() to construct.
+    private DeleteResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DeleteResponse() {
+      success_ = false;
+      reason_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DeleteResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              success_ = input.readBool();
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              reason_ = bs;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.jjemson.s3.S3Protocol.DeleteResponse.class, com.jjemson.s3.S3Protocol.DeleteResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_;
+    /**
+     * <code>required bool success = 1;</code>
+     */
+    public boolean hasSuccess() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bool success = 1;</code>
+     */
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    public static final int REASON_FIELD_NUMBER = 2;
+    private volatile java.lang.Object reason_;
+    /**
+     * <code>optional string reason = 2;</code>
+     */
+    public boolean hasReason() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string reason = 2;</code>
+     */
+    public java.lang.String getReason() {
+      java.lang.Object ref = reason_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          reason_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string reason = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getReasonBytes() {
+      java.lang.Object ref = reason_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        reason_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasSuccess()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, success_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, reason_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, reason_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.jjemson.s3.S3Protocol.DeleteResponse)) {
+        return super.equals(obj);
+      }
+      com.jjemson.s3.S3Protocol.DeleteResponse other = (com.jjemson.s3.S3Protocol.DeleteResponse) obj;
+
+      boolean result = true;
+      result = result && (hasSuccess() == other.hasSuccess());
+      if (hasSuccess()) {
+        result = result && (getSuccess()
+            == other.getSuccess());
+      }
+      result = result && (hasReason() == other.hasReason());
+      if (hasReason()) {
+        result = result && getReason()
+            .equals(other.getReason());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasSuccess()) {
+        hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getSuccess());
+      }
+      if (hasReason()) {
+        hash = (37 * hash) + REASON_FIELD_NUMBER;
+        hash = (53 * hash) + getReason().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.jjemson.s3.S3Protocol.DeleteResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.jjemson.s3.S3Protocol.DeleteResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.jjemson.s3.DeleteResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.jjemson.s3.DeleteResponse)
+        com.jjemson.s3.S3Protocol.DeleteResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.jjemson.s3.S3Protocol.DeleteResponse.class, com.jjemson.s3.S3Protocol.DeleteResponse.Builder.class);
+      }
+
+      // Construct using com.jjemson.s3.S3Protocol.DeleteResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        success_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        reason_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.jjemson.s3.S3Protocol.internal_static_com_jjemson_s3_DeleteResponse_descriptor;
+      }
+
+      public com.jjemson.s3.S3Protocol.DeleteResponse getDefaultInstanceForType() {
+        return com.jjemson.s3.S3Protocol.DeleteResponse.getDefaultInstance();
+      }
+
+      public com.jjemson.s3.S3Protocol.DeleteResponse build() {
+        com.jjemson.s3.S3Protocol.DeleteResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.jjemson.s3.S3Protocol.DeleteResponse buildPartial() {
+        com.jjemson.s3.S3Protocol.DeleteResponse result = new com.jjemson.s3.S3Protocol.DeleteResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.success_ = success_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.reason_ = reason_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.jjemson.s3.S3Protocol.DeleteResponse) {
+          return mergeFrom((com.jjemson.s3.S3Protocol.DeleteResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.jjemson.s3.S3Protocol.DeleteResponse other) {
+        if (other == com.jjemson.s3.S3Protocol.DeleteResponse.getDefaultInstance()) return this;
+        if (other.hasSuccess()) {
+          setSuccess(other.getSuccess());
+        }
+        if (other.hasReason()) {
+          bitField0_ |= 0x00000002;
+          reason_ = other.reason_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasSuccess()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.jjemson.s3.S3Protocol.DeleteResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.jjemson.s3.S3Protocol.DeleteResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>required bool success = 1;</code>
+       */
+      public boolean hasSuccess() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bool success = 1;</code>
+       */
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>required bool success = 1;</code>
+       */
+      public Builder setSuccess(boolean value) {
+        bitField0_ |= 0x00000001;
+        success_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool success = 1;</code>
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object reason_ = "";
+      /**
+       * <code>optional string reason = 2;</code>
+       */
+      public boolean hasReason() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string reason = 2;</code>
+       */
+      public java.lang.String getReason() {
+        java.lang.Object ref = reason_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            reason_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string reason = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getReasonBytes() {
+        java.lang.Object ref = reason_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          reason_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string reason = 2;</code>
+       */
+      public Builder setReason(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        reason_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string reason = 2;</code>
+       */
+      public Builder clearReason() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        reason_ = getDefaultInstance().getReason();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string reason = 2;</code>
+       */
+      public Builder setReasonBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        reason_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.jjemson.s3.DeleteResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.jjemson.s3.DeleteResponse)
+    private static final com.jjemson.s3.S3Protocol.DeleteResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.jjemson.s3.S3Protocol.DeleteResponse();
+    }
+
+    public static com.jjemson.s3.S3Protocol.DeleteResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<DeleteResponse>
+        PARSER = new com.google.protobuf.AbstractParser<DeleteResponse>() {
+      public DeleteResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new DeleteResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DeleteResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DeleteResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.jjemson.s3.S3Protocol.DeleteResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final int DEL_RESPONSE_FIELD_NUMBER = 1010;
+    /**
+     * <code>extend .com.jjemson.s3.S3Message { ... }</code>
+     */
+    public static final
+      com.google.protobuf.GeneratedMessage.GeneratedExtension<
+        com.jjemson.s3.S3Protocol.S3Message,
+        com.jjemson.s3.S3Protocol.DeleteResponse> delResponse = com.google.protobuf.GeneratedMessage
+            .newMessageScopedGeneratedExtension(
+          com.jjemson.s3.S3Protocol.DeleteResponse.getDefaultInstance(),
+          0,
+          com.jjemson.s3.S3Protocol.DeleteResponse.class,
+          com.jjemson.s3.S3Protocol.DeleteResponse.getDefaultInstance());
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_jjemson_s3_S3Message_descriptor;
   private static final 
@@ -4522,6 +7120,21 @@ public final class S3Protocol {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_jjemson_s3_CheckinResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_jjemson_s3_DelegationRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_jjemson_s3_DelegationRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_jjemson_s3_DeleteRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_jjemson_s3_DeleteRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_jjemson_s3_DeleteResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_jjemson_s3_DeleteResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4531,35 +7144,50 @@ public final class S3Protocol {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010s3.proto\022\016com.jjemson.s3\"\324\001\n\tS3Message" +
+      "\n\010s3.proto\022\016com.jjemson.s3\"\222\002\n\tS3Message" +
       "\0223\n\004type\030\001 \002(\0162%.com.jjemson.s3.S3Messag" +
-      "e.MessageType\"\206\001\n\013MessageType\022\022\n\016Checkin" +
+      "e.MessageType\"\304\001\n\013MessageType\022\022\n\016Checkin" +
       "Request\020\001\022\023\n\017CheckinResponse\020\002\022\023\n\017Checko" +
       "utRequest\020\003\022\024\n\020CheckoutResponse\020\004\022\020\n\014Log" +
-      "inRequest\020\005\022\021\n\rLoginResponse\020\006*\t\010\350\007\020\200\200\200\200" +
-      "\002\"y\n\014LoginRequest\022\014\n\004user\030\001 \002(\t\022\022\n\nclien" +
-      "tCert\030\002 \002(\0142G\n\005login\022\031.com.jjemson.s3.S3" +
-      "Message\030\355\007 \001(\0132\034.com.jjemson.s3.LoginReq" +
-      "uest\"m\n\rLoginResponse\022\022\n\nserverCert\030\001 \002(",
-      "\0142H\n\005login\022\031.com.jjemson.s3.S3Message\030\356\007" +
-      " \001(\0132\035.com.jjemson.s3.LoginResponse\"w\n\017C" +
-      "heckoutRequest\022\023\n\013document_id\030\001 \002(\t2O\n\nc" +
-      "o_request\022\031.com.jjemson.s3.S3Message\030\353\007 " +
-      "\001(\0132\037.com.jjemson.s3.CheckoutRequest\"\211\001\n" +
-      "\020CheckoutResponse\022\017\n\007success\030\001 \002(\010\022\021\n\tfi" +
-      "le_data\030\002 \001(\0142Q\n\013co_response\022\031.com.jjems" +
-      "on.s3.S3Message\030\354\007 \001(\0132 .com.jjemson.s3." +
-      "CheckoutResponse\"\264\001\n\016CheckinRequest\022\023\n\013d" +
-      "ocument_id\030\001 \002(\t\022\021\n\tfile_data\030\002 \002(\014\022*\n\010s",
-      "ecurity\030\003 \002(\0162\030.com.jjemson.s3.Security2" +
-      "N\n\nci_request\022\031.com.jjemson.s3.S3Message" +
-      "\030\351\007 \001(\0132\036.com.jjemson.s3.CheckinRequest\"" +
-      "\204\001\n\017CheckinResponse\022\017\n\007success\030\001 \002(\010\022\016\n\006" +
-      "reason\030\002 \001(\t2P\n\013ci_response\022\031.com.jjemso" +
-      "n.s3.S3Message\030\352\007 \001(\0132\037.com.jjemson.s3.C" +
-      "heckinResponse*A\n\010Security\022\010\n\004NONE\020\000\022\023\n\017" +
-      "CONFIDENTIALITY\020\001\022\r\n\tINTEGRITY\020\002\022\007\n\003ALL\020" +
-      "\004B\034\n\016com.jjemson.s3B\nS3Protocol"
+      "inRequest\020\005\022\021\n\rLoginResponse\020\006\022\025\n\021Delega" +
+      "tionRequest\020\007\022\021\n\rDeleteRequest\020\t\022\022\n\016Dele" +
+      "teResponse\020\n*\t\010\350\007\020\200\200\200\200\002\"y\n\014LoginRequest\022" +
+      "\014\n\004user\030\001 \002(\t\022\022\n\nclientCert\030\002 \002(\0142G\n\005log" +
+      "in\022\031.com.jjemson.s3.S3Message\030\355\007 \001(\0132\034.c",
+      "om.jjemson.s3.LoginRequest\"m\n\rLoginRespo" +
+      "nse\022\022\n\nserverCert\030\001 \002(\0142H\n\005login\022\031.com.j" +
+      "jemson.s3.S3Message\030\356\007 \001(\0132\035.com.jjemson" +
+      ".s3.LoginResponse\"\206\001\n\017CheckoutRequest\022\023\n" +
+      "\013document_id\030\001 \002(\t\022\r\n\005owner\030\002 \001(\t2O\n\nco_" +
+      "request\022\031.com.jjemson.s3.S3Message\030\353\007 \001(" +
+      "\0132\037.com.jjemson.s3.CheckoutRequest\"\265\001\n\020C" +
+      "heckoutResponse\022\017\n\007success\030\001 \002(\010\022*\n\010secu" +
+      "rity\030\002 \001(\0162\030.com.jjemson.s3.Security\022\021\n\t" +
+      "file_data\030\003 \001(\0142Q\n\013co_response\022\031.com.jje",
+      "mson.s3.S3Message\030\354\007 \001(\0132 .com.jjemson.s" +
+      "3.CheckoutResponse\"\264\001\n\016CheckinRequest\022\023\n" +
+      "\013document_id\030\001 \002(\t\022\021\n\tfile_data\030\002 \002(\014\022*\n" +
+      "\010security\030\003 \002(\0162\030.com.jjemson.s3.Securit" +
+      "y2N\n\nci_request\022\031.com.jjemson.s3.S3Messa" +
+      "ge\030\351\007 \001(\0132\036.com.jjemson.s3.CheckinReques" +
+      "t\"\204\001\n\017CheckinResponse\022\017\n\007success\030\001 \002(\010\022\016" +
+      "\n\006reason\030\002 \001(\t2P\n\013ci_response\022\031.com.jjem" +
+      "son.s3.S3Message\030\352\007 \001(\0132\037.com.jjemson.s3" +
+      ".CheckinResponse\"\264\001\n\021DelegationRequest\022\023",
+      "\n\013document_id\030\001 \002(\t\022\023\n\013client_user\030\002 \002(\t" +
+      "\022\020\n\010duration\030\003 \002(\005\022\021\n\tpropagate\030\004 \002(\0102P\n" +
+      "\td_request\022\031.com.jjemson.s3.S3Message\030\357\007" +
+      " \001(\0132!.com.jjemson.s3.DelegationRequest\"" +
+      "\214\001\n\rDeleteRequest\022\023\n\013document_id\030\001 \002(\t\022\026" +
+      "\n\016document_owner\030\002 \001(\t2N\n\013del_request\022\031." +
+      "com.jjemson.s3.S3Message\030\361\007 \001(\0132\035.com.jj" +
+      "emson.s3.DeleteRequest\"\203\001\n\016DeleteRespons" +
+      "e\022\017\n\007success\030\001 \002(\010\022\016\n\006reason\030\002 \001(\t2P\n\014de" +
+      "l_response\022\031.com.jjemson.s3.S3Message\030\362\007",
+      " \001(\0132\036.com.jjemson.s3.DeleteResponse*A\n\010" +
+      "Security\022\010\n\004NONE\020\000\022\023\n\017CONFIDENTIALITY\020\001\022" +
+      "\r\n\tINTEGRITY\020\002\022\007\n\003ALL\020\004B\034\n\016com.jjemson.s" +
+      "3B\nS3Protocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4596,13 +7224,13 @@ public final class S3Protocol {
     internal_static_com_jjemson_s3_CheckoutRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckoutRequest_descriptor,
-        new java.lang.String[] { "DocumentId", });
+        new java.lang.String[] { "DocumentId", "Owner", });
     internal_static_com_jjemson_s3_CheckoutResponse_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_com_jjemson_s3_CheckoutResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckoutResponse_descriptor,
-        new java.lang.String[] { "Success", "FileData", });
+        new java.lang.String[] { "Success", "Security", "FileData", });
     internal_static_com_jjemson_s3_CheckinRequest_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_com_jjemson_s3_CheckinRequest_fieldAccessorTable = new
@@ -4614,6 +7242,24 @@ public final class S3Protocol {
     internal_static_com_jjemson_s3_CheckinResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_jjemson_s3_CheckinResponse_descriptor,
+        new java.lang.String[] { "Success", "Reason", });
+    internal_static_com_jjemson_s3_DelegationRequest_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_com_jjemson_s3_DelegationRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_jjemson_s3_DelegationRequest_descriptor,
+        new java.lang.String[] { "DocumentId", "ClientUser", "Duration", "Propagate", });
+    internal_static_com_jjemson_s3_DeleteRequest_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_com_jjemson_s3_DeleteRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_jjemson_s3_DeleteRequest_descriptor,
+        new java.lang.String[] { "DocumentId", "DocumentOwner", });
+    internal_static_com_jjemson_s3_DeleteResponse_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_com_jjemson_s3_DeleteResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_jjemson_s3_DeleteResponse_descriptor,
         new java.lang.String[] { "Success", "Reason", });
   }
 

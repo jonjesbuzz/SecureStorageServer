@@ -16,6 +16,9 @@ message S3Message {
         CheckoutResponse = 4;
         LoginRequest = 5;
         LoginResponse = 6;
+        DelegationRequest = 7;
+        DeleteRequest = 9;
+        DeleteResponse = 10;
     }
 
     required MessageType type = 1;
@@ -40,6 +43,7 @@ message CheckoutRequest {
         optional CheckoutRequest co_request = 1003;
     }
     required string document_id = 1;
+    optional string owner = 2;
 }
 
 message CheckoutResponse {
@@ -47,7 +51,8 @@ message CheckoutResponse {
         optional CheckoutResponse co_response = 1004;
     }
     required bool success = 1;
-    optional bytes file_data = 2;
+    optional Security security = 2;
+    optional bytes file_data = 3;
 }
 
 enum Security {
@@ -69,6 +74,32 @@ message CheckinRequest {
 message CheckinResponse {
     extend S3Message {
         optional CheckinResponse ci_response = 1002;
+    }
+    required bool success = 1;
+    optional string reason = 2;
+}
+
+message DelegationRequest {
+    extend S3Message {
+        optional DelegationRequest d_request = 1007;
+    }
+    required string document_id = 1;
+    required string client_user = 2;
+    required int32 duration = 3;
+    required bool propagate = 4;
+}
+
+message DeleteRequest {
+    extend S3Message {
+        optional DeleteRequest del_request = 1009;
+    }
+    required string document_id = 1;
+    optional string document_owner = 2;
+}
+
+message DeleteResponse {
+    extend S3Message {
+        optional DeleteResponse del_response = 1010;
     }
     required bool success = 1;
     optional string reason = 2;
