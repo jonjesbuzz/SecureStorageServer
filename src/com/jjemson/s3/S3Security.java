@@ -74,7 +74,7 @@ public class S3Security {
         }
     }
 
-    private static KeyStore loadKeyStore(String storeName, String password)
+    public static KeyStore loadKeyStore(String storeName, String password)
             throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException
     {
         java.io.FileInputStream fis = null;

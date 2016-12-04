@@ -5,9 +5,14 @@ import com.google.protobuf.ExtensionRegistry;
 import com.jjemson.s3.S3Protocol.*;
 import com.jjemson.s3.S3Security;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -41,7 +46,6 @@ public class S3Client {
     private int port;
 
     private Socket socket;
-    private PrivateKey privateKey;
     private OutputStream outputStream;
     private InputStream inputStream;
 
@@ -56,20 +60,26 @@ public class S3Client {
         System.err.println("[Client] " + s);
     }
 
-    public S3Client(PrivateKey privateKey) {
-        this("localhost", 8088, privateKey);
+    public S3Client() {
+        this("localhost", 8088);
     }
-    public S3Client(String host, int port, PrivateKey privateKey) {
+    public S3Client(String host, int port) {
         this.hostname = host;
         this.port = port;
-        this.privateKey = privateKey;
         this.openFiles = new HashSet<>();
         closed = true;
     }
 
     public void connect(String username, Certificate myCert) {
         try {
-            socket = new Socket(hostname, port);
+            KeyStore keyStore = S3Security.loadKeyStore(username, "cs6238");
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(keyStore, "cs6238".toCharArray());
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(keyStore);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+            socket = sslContext.getSocketFactory().createSocket(hostname, port);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
 
@@ -82,6 +92,8 @@ public class S3Client {
             printError("Could not connect to " + hostname + ":" + port + ".");
             System.exit(1);
             return;
+        } catch (GeneralSecurityException gse) {
+            gse.printStackTrace();
         }
 
         // TODO Perform mutual authentication.
@@ -106,18 +118,6 @@ public class S3Client {
                 printError("Could not verify certificate");
                 System.exit(1);
             }
-
-//            try {
-//                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-//                cipher.init(Cipher.ENCRYPT_MODE, server);
-//                outputStream = new CipherOutputStream(outputStream, cipher);
-//                cipher.init(Cipher.DECRYPT_MODE, privateKey);
-//                inputStream = new CipherInputStream(inputStream, cipher);
-//
-//            } catch (GeneralSecurityException gse) {
-//                printError("Failed to encrypt the link.");
-//                gse.printStackTrace();
-//            }
         } catch (IOException ioe) {
             printError("Could not communicate with server");
             ioe.printStackTrace();
@@ -264,7 +264,6 @@ public class S3Client {
             ioe.printStackTrace();
             return false;
         }
-//        return true;
     }
 
     public void close() {
@@ -317,7 +316,7 @@ public class S3Client {
             printError("Could not open client certificate.");
             return;
         }
-        S3Client client = new S3Client(privateKey);
+        S3Client client = new S3Client();
         client.connect(username, certificate);
         if (username.equals("client1")) {
             client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
