@@ -157,6 +157,11 @@ class S3Session implements Runnable {
                     msg2.writeDelimitedTo(this.socket.getOutputStream());
 
                 }
+                if (msg.getType() == S3Message.MessageType.CloseRequest) {
+                    printInfo("Closing socket...");
+                    socket.close();
+                    return;
+                }
             }
         } catch (IOException ioe) {
             printError("Error - Terminating session for user " + user + ".");

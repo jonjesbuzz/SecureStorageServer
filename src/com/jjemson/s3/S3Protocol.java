@@ -265,6 +265,10 @@ public final class S3Protocol {
        * <code>DeleteResponse = 10;</code>
        */
       DeleteResponse(10),
+      /**
+       * <code>CloseRequest = 11;</code>
+       */
+      CloseRequest(11),
       ;
 
       /**
@@ -303,6 +307,10 @@ public final class S3Protocol {
        * <code>DeleteResponse = 10;</code>
        */
       public static final int DeleteResponse_VALUE = 10;
+      /**
+       * <code>CloseRequest = 11;</code>
+       */
+      public static final int CloseRequest_VALUE = 11;
 
 
       public final int getNumber() {
@@ -328,6 +336,7 @@ public final class S3Protocol {
           case 7: return DelegationRequest;
           case 9: return DeleteRequest;
           case 10: return DeleteResponse;
+          case 11: return CloseRequest;
           default: return null;
         }
       }
@@ -7144,50 +7153,50 @@ public final class S3Protocol {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010s3.proto\022\016com.jjemson.s3\"\222\002\n\tS3Message" +
+      "\n\010s3.proto\022\016com.jjemson.s3\"\244\002\n\tS3Message" +
       "\0223\n\004type\030\001 \002(\0162%.com.jjemson.s3.S3Messag" +
-      "e.MessageType\"\304\001\n\013MessageType\022\022\n\016Checkin" +
+      "e.MessageType\"\326\001\n\013MessageType\022\022\n\016Checkin" +
       "Request\020\001\022\023\n\017CheckinResponse\020\002\022\023\n\017Checko" +
       "utRequest\020\003\022\024\n\020CheckoutResponse\020\004\022\020\n\014Log" +
       "inRequest\020\005\022\021\n\rLoginResponse\020\006\022\025\n\021Delega" +
       "tionRequest\020\007\022\021\n\rDeleteRequest\020\t\022\022\n\016Dele" +
-      "teResponse\020\n*\t\010\350\007\020\200\200\200\200\002\"y\n\014LoginRequest\022" +
-      "\014\n\004user\030\001 \002(\t\022\022\n\nclientCert\030\002 \002(\0142G\n\005log" +
-      "in\022\031.com.jjemson.s3.S3Message\030\355\007 \001(\0132\034.c",
-      "om.jjemson.s3.LoginRequest\"m\n\rLoginRespo" +
-      "nse\022\022\n\nserverCert\030\001 \002(\0142H\n\005login\022\031.com.j" +
-      "jemson.s3.S3Message\030\356\007 \001(\0132\035.com.jjemson" +
-      ".s3.LoginResponse\"\206\001\n\017CheckoutRequest\022\023\n" +
-      "\013document_id\030\001 \002(\t\022\r\n\005owner\030\002 \001(\t2O\n\nco_" +
-      "request\022\031.com.jjemson.s3.S3Message\030\353\007 \001(" +
-      "\0132\037.com.jjemson.s3.CheckoutRequest\"\265\001\n\020C" +
-      "heckoutResponse\022\017\n\007success\030\001 \002(\010\022*\n\010secu" +
-      "rity\030\002 \001(\0162\030.com.jjemson.s3.Security\022\021\n\t" +
-      "file_data\030\003 \001(\0142Q\n\013co_response\022\031.com.jje",
-      "mson.s3.S3Message\030\354\007 \001(\0132 .com.jjemson.s" +
-      "3.CheckoutResponse\"\264\001\n\016CheckinRequest\022\023\n" +
-      "\013document_id\030\001 \002(\t\022\021\n\tfile_data\030\002 \002(\014\022*\n" +
-      "\010security\030\003 \002(\0162\030.com.jjemson.s3.Securit" +
-      "y2N\n\nci_request\022\031.com.jjemson.s3.S3Messa" +
-      "ge\030\351\007 \001(\0132\036.com.jjemson.s3.CheckinReques" +
-      "t\"\204\001\n\017CheckinResponse\022\017\n\007success\030\001 \002(\010\022\016" +
-      "\n\006reason\030\002 \001(\t2P\n\013ci_response\022\031.com.jjem" +
-      "son.s3.S3Message\030\352\007 \001(\0132\037.com.jjemson.s3" +
-      ".CheckinResponse\"\264\001\n\021DelegationRequest\022\023",
-      "\n\013document_id\030\001 \002(\t\022\023\n\013client_user\030\002 \002(\t" +
-      "\022\020\n\010duration\030\003 \002(\005\022\021\n\tpropagate\030\004 \002(\0102P\n" +
-      "\td_request\022\031.com.jjemson.s3.S3Message\030\357\007" +
-      " \001(\0132!.com.jjemson.s3.DelegationRequest\"" +
-      "\214\001\n\rDeleteRequest\022\023\n\013document_id\030\001 \002(\t\022\026" +
-      "\n\016document_owner\030\002 \001(\t2N\n\013del_request\022\031." +
-      "com.jjemson.s3.S3Message\030\361\007 \001(\0132\035.com.jj" +
-      "emson.s3.DeleteRequest\"\203\001\n\016DeleteRespons" +
-      "e\022\017\n\007success\030\001 \002(\010\022\016\n\006reason\030\002 \001(\t2P\n\014de" +
-      "l_response\022\031.com.jjemson.s3.S3Message\030\362\007",
-      " \001(\0132\036.com.jjemson.s3.DeleteResponse*A\n\010" +
-      "Security\022\010\n\004NONE\020\000\022\023\n\017CONFIDENTIALITY\020\001\022" +
-      "\r\n\tINTEGRITY\020\002\022\007\n\003ALL\020\004B\034\n\016com.jjemson.s" +
-      "3B\nS3Protocol"
+      "teResponse\020\n\022\020\n\014CloseRequest\020\013*\t\010\350\007\020\200\200\200\200" +
+      "\002\"y\n\014LoginRequest\022\014\n\004user\030\001 \002(\t\022\022\n\nclien" +
+      "tCert\030\002 \002(\0142G\n\005login\022\031.com.jjemson.s3.S3",
+      "Message\030\355\007 \001(\0132\034.com.jjemson.s3.LoginReq" +
+      "uest\"m\n\rLoginResponse\022\022\n\nserverCert\030\001 \002(" +
+      "\0142H\n\005login\022\031.com.jjemson.s3.S3Message\030\356\007" +
+      " \001(\0132\035.com.jjemson.s3.LoginResponse\"\206\001\n\017" +
+      "CheckoutRequest\022\023\n\013document_id\030\001 \002(\t\022\r\n\005" +
+      "owner\030\002 \001(\t2O\n\nco_request\022\031.com.jjemson." +
+      "s3.S3Message\030\353\007 \001(\0132\037.com.jjemson.s3.Che" +
+      "ckoutRequest\"\265\001\n\020CheckoutResponse\022\017\n\007suc" +
+      "cess\030\001 \002(\010\022*\n\010security\030\002 \001(\0162\030.com.jjems" +
+      "on.s3.Security\022\021\n\tfile_data\030\003 \001(\0142Q\n\013co_",
+      "response\022\031.com.jjemson.s3.S3Message\030\354\007 \001" +
+      "(\0132 .com.jjemson.s3.CheckoutResponse\"\264\001\n" +
+      "\016CheckinRequest\022\023\n\013document_id\030\001 \002(\t\022\021\n\t" +
+      "file_data\030\002 \002(\014\022*\n\010security\030\003 \002(\0162\030.com." +
+      "jjemson.s3.Security2N\n\nci_request\022\031.com." +
+      "jjemson.s3.S3Message\030\351\007 \001(\0132\036.com.jjemso" +
+      "n.s3.CheckinRequest\"\204\001\n\017CheckinResponse\022" +
+      "\017\n\007success\030\001 \002(\010\022\016\n\006reason\030\002 \001(\t2P\n\013ci_r" +
+      "esponse\022\031.com.jjemson.s3.S3Message\030\352\007 \001(" +
+      "\0132\037.com.jjemson.s3.CheckinResponse\"\264\001\n\021D",
+      "elegationRequest\022\023\n\013document_id\030\001 \002(\t\022\023\n" +
+      "\013client_user\030\002 \002(\t\022\020\n\010duration\030\003 \002(\005\022\021\n\t" +
+      "propagate\030\004 \002(\0102P\n\td_request\022\031.com.jjems" +
+      "on.s3.S3Message\030\357\007 \001(\0132!.com.jjemson.s3." +
+      "DelegationRequest\"\214\001\n\rDeleteRequest\022\023\n\013d" +
+      "ocument_id\030\001 \002(\t\022\026\n\016document_owner\030\002 \001(\t" +
+      "2N\n\013del_request\022\031.com.jjemson.s3.S3Messa" +
+      "ge\030\361\007 \001(\0132\035.com.jjemson.s3.DeleteRequest" +
+      "\"\203\001\n\016DeleteResponse\022\017\n\007success\030\001 \002(\010\022\016\n\006" +
+      "reason\030\002 \001(\t2P\n\014del_response\022\031.com.jjems",
+      "on.s3.S3Message\030\362\007 \001(\0132\036.com.jjemson.s3." +
+      "DeleteResponse*A\n\010Security\022\010\n\004NONE\020\000\022\023\n\017" +
+      "CONFIDENTIALITY\020\001\022\r\n\tINTEGRITY\020\002\022\007\n\003ALL\020" +
+      "\004B\034\n\016com.jjemson.s3B\nS3Protocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -10,7 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.security.*;
-import java.util.*;
+import java.util.EnumSet;
 
 /**
  * S3File
@@ -26,7 +26,6 @@ class S3File {
     private String owner;
     private String filename;
     private Security fileSec;
-    private Map<String, S3FileDelegate> delegates;
 
     private File file;
 
@@ -113,7 +112,6 @@ class S3File {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        this.delegates = new HashMap<>();
     }
 
     protected S3File(String owner, CheckinRequest checkIn) {
@@ -125,6 +123,10 @@ class S3File {
         if (keyFile.exists()) {
             keyFile.delete();
         }
+        File sigFile = new File(keyFile.getParentFile(), this.filename + ".sig");
+        if (sigFile.exists()) {
+            sigFile.delete();
+        }
         this.file.delete();
     }
 
@@ -134,12 +136,6 @@ class S3File {
 
     public static String documentID(String owner, String filename) {
         return owner + "/" + filename;
-    }
-
-    public void delegate(String user, int timeInterval, boolean propagate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, timeInterval);
-        delegates.put(user, new S3FileDelegate(user, calendar.getTime(),  propagate));
     }
 
     public byte[] getFileData() {
@@ -206,32 +202,7 @@ class S3File {
         return owner;
     }
 
-    public boolean checkDelegateForUser(String user) {
-        S3FileDelegate delegate = delegates.get(user);
-        if (delegate == null) {
-            return false;
-        }
-        Date now = new Date();
-        if (now.after(delegate.validUntil)) {
-            delegates.remove(user);
-            return false;
-        }
-        return true;
-    }
-
     public Security getFileSec() {
         return fileSec;
-    }
-
-    private static class S3FileDelegate {
-        private String user;
-        private Date validUntil;
-        private boolean propagate;
-
-        S3FileDelegate(String user, Date validUntil, boolean propagate) {
-            this.user = user;
-            this.validUntil = validUntil;
-            this.propagate = propagate;
-        }
     }
 }

@@ -19,6 +19,7 @@ message S3Message {
         DelegationRequest = 7;
         DeleteRequest = 9;
         DeleteResponse = 10;
+        CloseRequest = 11;
     }
 
     required MessageType type = 1;

@@ -265,6 +265,10 @@ public class S3Client {
         openFiles.clear();
         // Then close the connection.
         try {
+            S3Message msg = S3Message.newBuilder()
+                    .setType(S3Message.MessageType.CloseRequest)
+                    .build();
+            msg.writeDelimitedTo(outputStream);
             this.socket.close();
         } catch (IOException ioe) {
             printError("Could not close socket.");
@@ -303,9 +307,7 @@ public class S3Client {
         client.connect(username, certificate);
         client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
         File file = client.checkout("swap.c");
-//        client.delegate("swap.c", "client2",120 * 60 * 60, false);
-//        printInfo("" + file);
-//        client.delete("swap.c");
+        client.delegate("swap.c", "client2",120 * 60 * 60, false);
         client.close();
     }
 
