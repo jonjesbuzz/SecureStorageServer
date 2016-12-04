@@ -47,6 +47,8 @@ public class S3Client {
 
     private Set<S3FileInfo> openFiles;
 
+    private boolean closed;
+
     private static void printInfo(String s) {
         System.out.println("[Client] " + s);
     }
@@ -62,6 +64,7 @@ public class S3Client {
         this.port = port;
         this.privateKey = privateKey;
         this.openFiles = new HashSet<>();
+        closed = true;
     }
 
     public void connect(String username, Certificate myCert) {
@@ -69,6 +72,12 @@ public class S3Client {
             socket = new Socket(hostname, port);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
+
+            // Even if the user doesn't explicitly close, we will.
+            Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+
+            closed = false;
+
         } catch (IOException ioe) {
             printError("Could not connect to " + hostname + ":" + port + ".");
             System.exit(1);
@@ -259,6 +268,9 @@ public class S3Client {
     }
 
     public void close() {
+        if (closed) {
+            return;
+        }
         for (S3FileInfo file : openFiles) {
             checkin(file.file, file.file.getName(), file.security);
         }
@@ -270,12 +282,14 @@ public class S3Client {
                     .build();
             msg.writeDelimitedTo(outputStream);
             this.socket.close();
+            closed = true;
         } catch (IOException ioe) {
             printError("Could not close socket.");
             ioe.printStackTrace();
         }
     }
 
+    // Called before JVM cleans it up; make absolutely sure connection is closed.
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
@@ -284,7 +298,7 @@ public class S3Client {
 
     public static void main(String... args) {
         if (args.length < 1) {
-            printError("Usage: java -jar s3server.jar [username]");
+            printError("Usage: java -jar s3client.jar [username]");
             System.exit(1);
             return;
         }
@@ -305,9 +319,13 @@ public class S3Client {
         }
         S3Client client = new S3Client(privateKey);
         client.connect(username, certificate);
-        client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
-        File file = client.checkout("swap.c");
-        client.delegate("swap.c", "client2",120 * 60 * 60, false);
+        if (username.equals("client1")) {
+            client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
+            client.delegate("swap.c", "client2",120 * 60 * 60, false);
+        }
+        if (username.equals("client2")) {
+            client.checkout("swap.c", "client1");
+        }
         client.close();
     }
 

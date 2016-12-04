@@ -52,14 +52,11 @@ class S3File {
                 }
             }
             EnumSet<Security> securities = EnumSet.of(fileSec);
-            System.out.println(securities);
             if (fileSec == Security.NONE || fileSec == Security.INTEGRITY) {
-                System.out.println("Writing file in the clear.");
                 fos.write(fileData);
             }
             if (securities.contains(Security.CONFIDENTIALITY) || securities.contains(Security.ALL)) {
                 try {
-                    System.out.println("Writing encrypted file.");
                     Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
                     c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncoded(), "AES"), ivspec);
                     CipherOutputStream cipherOutputStream = new CipherOutputStream(fos, c);
@@ -89,7 +86,6 @@ class S3File {
 
             }
             if (securities.contains(Security.INTEGRITY) || securities.contains(Security.ALL)) {
-                System.out.println("Generating signature for cleartext.");
                 try {
                     KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
                     Signature signature = Signature.getInstance("SHA256withRSA");
@@ -204,5 +200,13 @@ class S3File {
 
     public Security getFileSec() {
         return fileSec;
+    }
+
+    @Override
+    public String toString() {
+        return "File: " + file.getName() + "\n" +
+                "Owner: " + owner + "\n" +
+                "Security: " + fileSec.toString() + "\n" +
+                "Document ID" + filename;
     }
 }

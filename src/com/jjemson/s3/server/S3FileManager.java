@@ -53,9 +53,13 @@ class S3FileManager {
         return true;
     }
 
-    public S3File checkoutDelegatedFile(String me, String owner, S3Protocol.CheckoutRequest request) {
-        String fileID = S3File.documentID(owner, request.getDocumentId());
+    public S3File checkoutDelegatedFile(String me, S3Protocol.CheckoutRequest request) {
+        String fileID = S3FileDelegate.delegateID(request.getOwner(), me, request.getDocumentId());
+        System.out.println("Requested delegate for " + fileID);
         S3FileDelegate delegate = delegates.get(fileID);
+        if (delegate == null) {
+            return null;
+        }
         if (delegate.expired()) {
             delegates.remove(fileID);
             return null;
@@ -65,7 +69,7 @@ class S3FileManager {
 
     public boolean addDelegation(String filename, String owner, String recipient, int duration, boolean propagation) {
         String fileID = S3File.documentID(owner, filename);
-        String delegateID = S3File.documentID(owner, filename);
+        String delegateID = S3FileDelegate.delegateID(owner, recipient, filename);
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, duration);
@@ -93,23 +97,33 @@ class S3FileManager {
         } else {
             delegates.put(delegateID, new S3FileDelegate(file, expiration, propagation));
         }
-
+        System.out.println(delegates.toString());
         return true;
     }
+}
+class S3FileDelegate {
+    S3File file;
+    Date expiry;
+    boolean propagate;
 
-    private class S3FileDelegate {
-        private S3File file;
-        private Date expiry;
-        private boolean propagate;
+    public static String delegateID(String owner, String delegatedTo, String documentID) {
+        return delegatedTo + "::" + S3File.documentID(owner, documentID);
+    }
 
-        public S3FileDelegate(S3File file, Date expiry, boolean propagate) {
-            this.file = file;
-            this.expiry = expiry;
-            this.propagate = propagate;
-        }
+    public S3FileDelegate(S3File file, Date expiry, boolean propagate) {
+        this.file = file;
+        this.expiry = expiry;
+        this.propagate = propagate;
+    }
 
-        public boolean expired() {
-            return new Date().after(expiry);
-        }
+    public boolean expired() {
+        return new Date().after(expiry);
+    }
+
+    @Override
+    public String toString() {
+        return "File: " + file.toString() + "\n" +
+                "Expires: " + expiry.toString() + "\n" +
+                "Propagates? " + propagate;
     }
 }

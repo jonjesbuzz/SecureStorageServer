@@ -110,7 +110,7 @@ class S3Session implements Runnable {
                     printInfo("Checkout:\n" + cor);
                     S3File file;
                     if (cor.hasOwner()) {
-                        file = S3FileManager.sharedInstance().checkoutDelegatedFile(user, cor.getOwner(), cor);
+                        file = S3FileManager.sharedInstance().checkoutDelegatedFile(user, cor);
                     } else {
                         file = S3FileManager.sharedInstance().checkoutFile(user, cor);
                     }
