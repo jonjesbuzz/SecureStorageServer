@@ -3,8 +3,8 @@ package com.jjemson.s3.server;
 import com.jjemson.s3.S3Protocol;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,10 +19,12 @@ class S3FileManager {
 
     private ConcurrentHashMap<String, S3File> metadata;
     private ConcurrentHashMap<String, S3FileDelegate> delegates;
+    private ConcurrentHashMap<String, Set<S3FileDelegate>> delegateLookup;
 
     private S3FileManager() {
         metadata = new ConcurrentHashMap<>(50);
         delegates = new ConcurrentHashMap<>(50);
+        delegateLookup = new ConcurrentHashMap<>(10);
     }
 
     public static S3FileManager sharedInstance() {
@@ -52,15 +54,26 @@ class S3FileManager {
     }
 
     public S3File checkoutDelegatedFile(String me, S3Protocol.CheckoutRequest request) {
-        String fileID = S3FileDelegate.delegateID(request.getOwner(), me, request.getDocumentId());
-        System.out.println("Requested delegate for " + fileID);
-        S3FileDelegate delegate = delegates.get(fileID);
+        if (request.getOwner().equals(me)) {
+            return checkoutFile(me, request);
+        }
+        Set<S3FileDelegate> delegateSet = delegateLookup.get(me);
+        if (delegateSet == null) {
+            return null;
+        }
+        S3FileDelegate delegate = null;
+        for (S3FileDelegate s3FileDelegate : delegateSet) {
+            if (s3FileDelegate.file.getFilename().equals(request.getDocumentId())) {
+                delegate = s3FileDelegate;
+                break;
+            }
+        }
         if (delegate == null) {
             return null;
         }
         if (delegate.expired()) {
-            System.out.println("Delegate expired.");
-            delegates.remove(fileID);
+            delegateSet.remove(delegate);
+            delegateLookup.put(me, delegateSet);
             return null;
         }
         return delegate.file;
@@ -68,31 +81,36 @@ class S3FileManager {
 
     public boolean addDelegation(String filename, String owner, String recipient, int duration, boolean propagation) {
         String fileID = S3File.documentID(owner, filename);
-        String delegateID = S3FileDelegate.delegateID(owner, recipient, filename);
-
         LocalDateTime expiration = LocalDateTime.now().plusSeconds(duration);
-
         S3File file = metadata.get(fileID);
 
+        Set<S3FileDelegate> delegateSet = delegateLookup.getOrDefault(owner, new HashSet<>());
         if (file == null) {
-            S3FileDelegate delegate = delegates.get(delegateID);
-            if (delegate == null) {
-                return false;
-            } else {
-                if (delegate.expired()) {
-                    delegates.remove(delegateID);
-                    return false;
+            S3FileDelegate del = null;
+            for (S3FileDelegate delegate : delegateSet) {
+                if (delegate.file.getFilename().equals(filename)) {
+                    del = delegate;
+                    break;
                 }
-                if (!delegate.propagate) {
-                    return false;
-                }
-                if (expiration.isAfter(delegate.expiry)) {
-                    expiration = delegate.expiry;
-                }
-                delegates.put(delegateID, new S3FileDelegate(delegate.file, expiration, propagation));
             }
+            if (del == null) {
+                return false;
+            }
+            if (del.expired()) {
+                delegateSet.remove(del);
+                return false;
+            }
+            if (!del.propagate) {
+                return false;
+            }
+            if (expiration.isAfter(del.expiry)) {
+                expiration = del.expiry;
+            }
+            delegateSet.add(new S3FileDelegate(del.file, expiration, propagation));
+            delegateLookup.put(recipient, delegateSet);
         } else {
-            delegates.put(delegateID, new S3FileDelegate(file, expiration, propagation));
+            delegateSet.add(new S3FileDelegate(file, expiration, propagation));
+            delegateLookup.put(recipient, delegateSet);
         }
         System.out.println(delegates.toString());
         return true;

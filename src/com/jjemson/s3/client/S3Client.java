@@ -329,7 +329,7 @@ public class S3Client {
         }
         if (username.equals("client2")) {
             File file = client.checkout("swap.c", "client1");
-            client.checkin(file, "swap.c", Security.INTEGRITY);
+//            client.checkin(file, "swap.c", Security.INTEGRITY);
             client.delegate("swap.c", "client3", 120 * 60 * 60, false);
         }
         if (username.equals("client3")) {

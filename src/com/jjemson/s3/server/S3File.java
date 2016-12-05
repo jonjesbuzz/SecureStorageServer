@@ -220,6 +220,10 @@ class S3File {
         return fileSec;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
     @Override
     public String toString() {
         return "File: " + file.getName() + "\n" +
