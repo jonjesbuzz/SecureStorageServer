@@ -10,7 +10,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.security.*;
-import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
@@ -19,7 +18,7 @@ import java.util.EnumSet;
  * @author Jonathan Jemson
  * @version 1.0
  */
-class S3File {
+class S3File implements Serializable {
 
     static byte[] iv = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     static IvParameterSpec ivspec = new IvParameterSpec(iv);

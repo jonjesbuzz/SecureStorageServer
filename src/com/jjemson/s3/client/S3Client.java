@@ -18,7 +18,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class S3Client {
     private boolean closed;
 
     private static void printInfo(String s) {
-        System.out.println("[Client] " + s);
+        // System.out.println("[Client] " + s);
     }
     private static void printError(String s) {
         System.err.println("[Client] " + s);

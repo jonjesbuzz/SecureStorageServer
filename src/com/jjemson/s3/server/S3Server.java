@@ -3,7 +3,9 @@ package com.jjemson.s3.server;
 import com.jjemson.s3.S3Security;
 
 import javax.net.ssl.*;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,7 +30,7 @@ public class S3Server {
     }
 
     private static void printInfo(String s) {
-        System.out.println("[Server] " + s);
+        // System.out.println("[Server] " + s);
     }
     private static void printError(String s) {
         System.err.println("[Server] " + s);
@@ -47,6 +49,7 @@ public class S3Server {
             this.socketFactory = sslContext.getSocketFactory();
             this.serverKeys = S3Security.getKeyPair("server", "cs6238", "localhost");
             this.socket = new ServerSocket(port);
+            Runtime.getRuntime().addShutdownHook(new Thread(this::writeMetadata));
             if (this.serverKeys == null) {
                 printError("Could not access server keys");
                 System.exit(1);
@@ -59,8 +62,21 @@ public class S3Server {
         }
     }
 
+    public void writeMetadata() {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(".s3meta");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(S3FileManager.sharedInstance());
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (IOException ioe) {
+            printError("Error serializing data.");
+            ioe.printStackTrace();
+        }
+    }
+
     public void startServer() {
-        printInfo("Started server on port " + this.socket.getLocalPort());
+        System.out.println("[Server] Started server on port " + this.socket.getLocalPort());
         Socket s;
         while (true) {
             try {

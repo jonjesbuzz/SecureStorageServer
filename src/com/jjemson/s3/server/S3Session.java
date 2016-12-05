@@ -38,11 +38,11 @@ class S3Session implements Runnable {
     }
 
     private void printInfo(String s) {
-        if (user == null) {
-            System.out.println("[Session: (no user)] " + s);
-        } else {
-            System.out.println("[Session: " + user + "] " + s);
-        }
+//        if (user == null) {
+//            System.out.println("[Session: (no user)] " + s);
+//        } else {
+//            System.out.println("[Session: " + user + "] " + s);
+//        }
     }
     private void printError(String s) {
         System.err.println("[Session] " + s);

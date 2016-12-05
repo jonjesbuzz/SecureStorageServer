@@ -2,6 +2,7 @@ package com.jjemson.s3.server;
 
 import com.jjemson.s3.S3Protocol;
 
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,21 +14,36 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Jonathan Jemson
  * @version 1.0
  */
-class S3FileManager {
+class S3FileManager implements Serializable {
 
-    private static S3FileManager instance = new S3FileManager();
+    private static S3FileManager instance;
 
     private ConcurrentHashMap<String, S3File> metadata;
-    private ConcurrentHashMap<String, S3FileDelegate> delegates;
     private ConcurrentHashMap<String, Set<S3FileDelegate>> delegateLookup;
 
     private S3FileManager() {
         metadata = new ConcurrentHashMap<>(50);
-        delegates = new ConcurrentHashMap<>(50);
         delegateLookup = new ConcurrentHashMap<>(10);
     }
 
     public static S3FileManager sharedInstance() {
+        if (instance == null) {
+            File file = new File(".s3meta");
+            if (!file.exists()) {
+                instance = new S3FileManager();
+            } else {
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(file);
+                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                    instance = (S3FileManager) objectInputStream.readObject();
+                } catch (IOException ioe) {
+                    instance = new S3FileManager();
+                    ioe.printStackTrace();
+                } catch (ClassNotFoundException cnfe) {
+                    cnfe.printStackTrace();
+                }
+            }
+        }
         return instance;
     }
 
@@ -112,18 +128,14 @@ class S3FileManager {
             delegateSet.add(new S3FileDelegate(file, expiration, propagation));
             delegateLookup.put(recipient, delegateSet);
         }
-        System.out.println(delegates.toString());
         return true;
     }
 }
-class S3FileDelegate {
+class S3FileDelegate implements Serializable {
     S3File file;
     LocalDateTime expiry;
     boolean propagate;
 
-    public static String delegateID(String owner, String delegatedTo, String documentID) {
-        return delegatedTo + "::" + S3File.documentID(owner, documentID);
-    }
 
     public S3FileDelegate(S3File file, LocalDateTime expiry, boolean propagate) {
         this.file = file;
