@@ -227,4 +227,24 @@ class S3File {
                 "Security: " + fileSec.toString() + "\n" +
                 "Document ID" + filename;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        S3File file = (S3File) o;
+
+        if (!owner.equals(file.owner)) return false;
+        if (!filename.equals(file.filename)) return false;
+        return fileSec == file.fileSec;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = owner.hashCode();
+        result = 31 * result + filename.hashCode();
+        result = 31 * result + fileSec.hashCode();
+        return result;
+    }
 }

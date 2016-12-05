@@ -324,11 +324,16 @@ public class S3Client {
         client.connect(username, certificate);
         if (username.equals("client1")) {
             client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
-            client.delegate("swap.c", "client2",120 * 60 * 60, false);
+            client.delegate("swap.c", "client2",120 * 60 * 60, true);
             client.checkout("swap.c");
         }
         if (username.equals("client2")) {
-            client.checkout("swap.c", "client1");
+            File file = client.checkout("swap.c", "client1");
+            client.checkin(file, "swap.c", Security.INTEGRITY);
+            client.delegate("swap.c", "client3", 120 * 60 * 60, false);
+        }
+        if (username.equals("client3")) {
+            client.checkout("swap.c", "client2");
         }
         client.close();
         Instant i1 = Instant.now();
