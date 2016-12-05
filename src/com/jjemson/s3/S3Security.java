@@ -15,9 +15,6 @@ import java.security.cert.CertificateFactory;
  */
 public class S3Security {
 
-    private static void printInfo(String s) {
-        System.out.println("[Security] " + s);
-    }
     private static void printError(String s) {
         System.err.println("[Security] " + s);
     }
@@ -79,8 +76,14 @@ public class S3Security {
     {
         java.io.FileInputStream fis = null;
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        fis = new java.io.FileInputStream("./certs/" + storeName + "/" + storeName + ".jks");
-        ks.load(fis, password.toCharArray());
+        try {
+            fis = new java.io.FileInputStream("./certs/" + storeName + "/" + storeName + ".jks");
+            ks.load(fis, password.toCharArray());
+        } finally {
+            if (fis != null) {
+                fis.close();
+            }
+        }
         return ks;
     }
 

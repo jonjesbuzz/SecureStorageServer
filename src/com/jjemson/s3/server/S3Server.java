@@ -45,7 +45,7 @@ public class S3Server {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             this.socketFactory = sslContext.getSocketFactory();
-            this.serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
+            this.serverKeys = S3Security.getKeyPair("server", "cs6238", "localhost");
             this.socket = new ServerSocket(port);
             if (this.serverKeys == null) {
                 printError("Could not access server keys");
@@ -72,7 +72,7 @@ public class S3Server {
                 sslSocket.startHandshake();
                 s = sslSocket;
                 printInfo("Connected to client: " + s.getInetAddress());
-                new Thread(new S3Session(s, serverKeys)).start();
+                new Thread(new S3Session(s)).start();
             } catch (IOException ioe) {
                 printError("Failed to accept socket connection.");
             }

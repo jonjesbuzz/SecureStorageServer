@@ -9,7 +9,6 @@ import com.jjemson.s3.S3Security;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.security.KeyPair;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 
@@ -23,7 +22,6 @@ class S3Session implements Runnable {
 
     private Socket socket;
     private String user;
-    private KeyPair serverKeys;
 
     private static ExtensionRegistry registry = ExtensionRegistry.newInstance();
 
@@ -50,9 +48,8 @@ class S3Session implements Runnable {
         System.err.println("[Session] " + s);
     }
 
-    public S3Session(Socket socket, KeyPair serverKeys) {
+    public S3Session(Socket socket) {
         this.socket = socket;
-        this.serverKeys = serverKeys;
     }
 
     @Override
@@ -77,7 +74,7 @@ class S3Session implements Runnable {
                         printError("Could not verify certificate as coming from CA.");
                         return;
                     }
-                    Certificate serverCert = S3Security.getCertificate("server", "cs6238", "S3 Server");
+                    Certificate serverCert = S3Security.getCertificate("server", "cs6238", "localhost");
                     try {
                         LoginResponse response = LoginResponse.newBuilder()
                                 .setServerCert(ByteString.copyFrom(serverCert.getEncoded()))

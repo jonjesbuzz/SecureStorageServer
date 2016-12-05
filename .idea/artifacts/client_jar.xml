@@ -1,9 +1,9 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="server:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/server_jar</output-path>
-    <root id="archive" name="S3Server.jar">
+  <artifact type="jar" name="client:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/client_jar</output-path>
+    <root id="archive" name="S3Client.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/manifests/server/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/manifests/client/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="project2" />
       <element id="extracted-dir" path="$PROJECT_DIR$/vendor/protobuf-java-3.1.0.jar" path-in-jar="/" />

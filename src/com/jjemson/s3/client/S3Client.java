@@ -16,6 +16,9 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -186,7 +189,7 @@ public class S3Client {
             ioe.printStackTrace();
             return false;
         }
-        openFiles.remove(file);
+        openFiles.remove(new S3FileInfo(file, Security.NONE));
         CheckinRequest checkIn = CheckinRequest
                 .newBuilder()
                 .setDocumentId(filename)
@@ -247,7 +250,7 @@ public class S3Client {
 
         File file = new File(filename);
         if (file.exists()) {
-            file.delete();
+            boolean deleted = file.delete();
             openFiles.remove(new S3FileInfo(file, null));
         }
 
@@ -316,19 +319,24 @@ public class S3Client {
             printError("Could not open client certificate.");
             return;
         }
+        Instant i0 = Instant.now();
         S3Client client = new S3Client();
         client.connect(username, certificate);
         if (username.equals("client1")) {
             client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
             client.delegate("swap.c", "client2",120 * 60 * 60, false);
+            client.checkout("swap.c");
         }
         if (username.equals("client2")) {
             client.checkout("swap.c", "client1");
         }
         client.close();
+        Instant i1 = Instant.now();
+        Duration duration = Duration.between(i0, i1);
+        printInfo("Request took " + duration.toString());
     }
 
-    private class S3FileInfo {
+    private static class S3FileInfo {
         private File file;
         private Security security;
         public S3FileInfo(File f, Security s) {

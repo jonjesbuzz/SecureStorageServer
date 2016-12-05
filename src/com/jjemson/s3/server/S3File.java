@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.security.*;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
@@ -38,9 +39,9 @@ class S3File {
             if (this.file.exists()) {
                 this.file.delete();
             }
-            this.file.getParentFile().mkdirs();
-            this.file.createNewFile();
-            OutputStream fos = new FileOutputStream(this.file);
+            boolean dirCreated = this.file.getParentFile().mkdirs();
+            boolean fileCreated = this.file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(this.file);
             SecretKey key = null;
             if (fileSec == Security.ALL || fileSec == Security.INTEGRITY || fileSec == Security.CONFIDENTIALITY) {
                 try {
@@ -54,14 +55,17 @@ class S3File {
             EnumSet<Security> securities = EnumSet.of(fileSec);
             if (fileSec == Security.NONE || fileSec == Security.INTEGRITY) {
                 fos.write(fileData);
+                fos.close();
             }
             if (securities.contains(Security.CONFIDENTIALITY) || securities.contains(Security.ALL)) {
                 try {
                     Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
-                    c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncoded(), "AES"), ivspec);
+                    c.init(Cipher.ENCRYPT_MODE, key, ivspec);
+
                     CipherOutputStream cipherOutputStream = new CipherOutputStream(fos, c);
                     cipherOutputStream.write(fileData);
                     cipherOutputStream.close();
+                    fos.close();
 
                     KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
                     PublicKey key1 = serverKeys.getPublic();
@@ -87,15 +91,19 @@ class S3File {
             }
             if (securities.contains(Security.INTEGRITY) || securities.contains(Security.ALL)) {
                 try {
-                    KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "S3 Server");
+                    KeyPair serverKeys = S3Security.getKeyPair("server", "cs6238", "localhost");
                     Signature signature = Signature.getInstance("SHA256withRSA");
                     signature.initSign(serverKeys.getPrivate());
                     signature.update(fileData);
                     byte[] signed = signature.sign();
                     File sigFile = new File(this.file.getParentFile(), "keys/" + this.filename + ".sig");
                     if (sigFile.exists()) {
-                        sigFile.delete();
+                        boolean sigFileDeleted = sigFile.delete();
                     }
+                    if (!sigFile.getParentFile().exists()) {
+                        sigFile.getParentFile().mkdirs();
+                    }
+                    sigFile.createNewFile();
                     FileOutputStream fileOutputStream = new FileOutputStream(sigFile);
                     fileOutputStream.write(signed);
                     fileOutputStream.close();
@@ -104,7 +112,7 @@ class S3File {
                     gse.printStackTrace();
                 }
             }
-            fos.close();
+
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -115,15 +123,19 @@ class S3File {
     }
 
     public void delete() {
+
         File keyFile = new File(this.file.getParentFile(), "keys/" + this.filename + ".key");
         if (keyFile.exists()) {
-            keyFile.delete();
+            boolean keyFileRemoved = keyFile.delete();
         }
         File sigFile = new File(keyFile.getParentFile(), this.filename + ".sig");
         if (sigFile.exists()) {
-            sigFile.delete();
+            boolean sigFileRemoved = sigFile.delete();
         }
-        this.file.delete();
+        boolean fileDeleted = this.file.delete();
+        if (fileDeleted) {
+            return;
+        }
     }
 
     public String getDocumentID() {
@@ -131,7 +143,7 @@ class S3File {
     }
 
     public static String documentID(String owner, String filename) {
-        return owner + "/" + filename;
+        return owner + File.separator + filename;
     }
 
     public byte[] getFileData() {
@@ -150,6 +162,8 @@ class S3File {
                 pkCipher.init(Cipher.DECRYPT_MODE, key1);
                 CipherInputStream keyCipher = new CipherInputStream(keyStream, pkCipher);
                 byte[] keyData = getBytesFromInputStream(keyCipher);
+                keyCipher.close();
+                keyStream.close();
 
                 Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 c.init(Cipher.DECRYPT_MODE, new SecretKeySpec(keyData, "AES"), ivspec);
@@ -168,13 +182,17 @@ class S3File {
                 signature.update(fileData);
                 boolean verified = signature.verify(sigBytes);
                 if (!verified) {
-                    System.err.println();
+                    System.err.println("Verification of file failed.");
                     return null;
                 }
             }
             return fileData;
-        } catch (Exception e) {
+        } catch (GeneralSecurityException e) {
+            System.err.println("Encountered a security exception");
             e.printStackTrace();
+        } catch (IOException ioe) {
+            System.err.println("Encountered an IO Exception");
+            ioe.printStackTrace();
         }
         return null;
     }

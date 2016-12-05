@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project2" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/rcs/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.zip"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.protobuf-java-3.1.0.classpath">
+    <pathelement location="${basedir}/vendor/protobuf-java-3.1.0.jar"/>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module project2 -->
+  
+  <dirname property="module.project2.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.project2" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="project2.output.dir" value="${module.project2.basedir}/out/production/project2"/>
+  <property name="project2.testoutput.dir" value="${module.project2.basedir}/out/test/project2"/>
+  
+  <path id="project2.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="project2.module.production.classpath">
+    <path refid="library.protobuf-java-3.1.0.classpath"/>
+  </path>
+  
+  <path id="project2.runtime.production.module.classpath">
+    <pathelement location="${project2.output.dir}"/>
+    <path refid="library.protobuf-java-3.1.0.classpath"/>
+  </path>
+  
+  <path id="project2.module.classpath">
+    <pathelement location="${project2.output.dir}"/>
+    <path refid="library.protobuf-java-3.1.0.classpath"/>
+  </path>
+  
+  <path id="project2.runtime.module.classpath">
+    <pathelement location="${project2.testoutput.dir}"/>
+    <pathelement location="${project2.output.dir}"/>
+    <path refid="library.protobuf-java-3.1.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.project2">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.project2">
+    <patternset refid="excluded.from.module.project2"/>
+  </patternset>
+  
+  <path id="project2.module.sourcepath">
+    <dirset dir="${module.project2.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.project2" depends="compile.module.project2.production,compile.module.project2.tests" description="Compile module project2"/>
+  
+  <target name="compile.module.project2.production" description="Compile module project2; production classes">
+    <mkdir dir="${project2.output.dir}"/>
+    <javac destdir="${project2.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.project2}"/>
+      <bootclasspath refid="project2.module.bootclasspath"/>
+      <classpath refid="project2.module.production.classpath"/>
+      <src refid="project2.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.project2"/>
+    </javac>
+    
+    <copy todir="${project2.output.dir}">
+      <fileset dir="${module.project2.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.project2.tests" depends="compile.module.project2.production" description="compile module project2; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.project2" description="cleanup module">
+    <delete dir="${project2.output.dir}"/>
+    <delete dir="${project2.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.project2" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.project2" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.client:jar" value="${basedir}/out/artifacts/client_jar"/>
+    <property name="artifact.output.server:jar" value="${basedir}/out/artifacts/server_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.S3Client.jar" value="${artifacts.temp.dir}/S3Client.jar"/>
+    <property name="temp.jar.path.S3Server.jar" value="${artifacts.temp.dir}/S3Server.jar"/>
+  </target>
+  
+  <target name="artifact.client:jar" depends="init.artifacts, compile.module.project2" description="Build &#39;client:jar&#39; artifact">
+    <property name="artifact.temp.output.client:jar" value="${artifacts.temp.dir}/client_jar"/>
+    <mkdir dir="${artifact.temp.output.client:jar}"/>
+    <jar destfile="${temp.jar.path.S3Client.jar}" duplicate="preserve" filesetmanifest="merge">
+      <zipfileset file="${basedir}/manifests/client/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${project2.output.dir}"/>
+      <zipfileset src="${basedir}/vendor/protobuf-java-3.1.0.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.S3Client.jar}" tofile="${artifact.temp.output.client:jar}/S3Client.jar"/>
+  </target>
+  
+  <target name="artifact.server:jar" depends="init.artifacts, compile.module.project2" description="Build &#39;server:jar&#39; artifact">
+    <property name="artifact.temp.output.server:jar" value="${artifacts.temp.dir}/server_jar"/>
+    <mkdir dir="${artifact.temp.output.server:jar}"/>
+    <jar destfile="${temp.jar.path.S3Server.jar}" duplicate="preserve" filesetmanifest="merge">
+      <zipfileset file="${basedir}/manifests/server/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${project2.output.dir}"/>
+      <zipfileset src="${basedir}/vendor/protobuf-java-3.1.0.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.S3Server.jar}" tofile="${artifact.temp.output.server:jar}/S3Server.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.client:jar, artifact.server:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.client:jar}"/>
+    <copy todir="${artifact.output.client:jar}">
+      <fileset dir="${artifact.temp.output.client:jar}"/>
+    </copy>
+    <mkdir dir="${artifact.output.server:jar}"/>
+    <copy todir="${artifact.output.server:jar}">
+      <fileset dir="${artifact.temp.output.server:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>

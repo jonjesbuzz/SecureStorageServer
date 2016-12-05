@@ -2,6 +2,7 @@ package com.jjemson.s3.server;
 
 import com.jjemson.s3.S3Protocol;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class S3FileManager {
 
-    private static S3FileManager instance;
+    private static S3FileManager instance = new S3FileManager();
 
     private ConcurrentHashMap<String, S3File> metadata;
     private ConcurrentHashMap<String, S3FileDelegate> delegates;
@@ -25,9 +26,6 @@ class S3FileManager {
     }
 
     public static S3FileManager sharedInstance() {
-        if (instance == null) {
-            instance = new S3FileManager();
-        }
         return instance;
     }
 
@@ -61,6 +59,7 @@ class S3FileManager {
             return null;
         }
         if (delegate.expired()) {
+            System.out.println("Delegate expired.");
             delegates.remove(fileID);
             return null;
         }
@@ -71,9 +70,7 @@ class S3FileManager {
         String fileID = S3File.documentID(owner, filename);
         String delegateID = S3FileDelegate.delegateID(owner, recipient, filename);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, duration);
-        Date expiration = calendar.getTime();
+        LocalDateTime expiration = LocalDateTime.now().plusSeconds(duration);
 
         S3File file = metadata.get(fileID);
 
@@ -89,7 +86,7 @@ class S3FileManager {
                 if (!delegate.propagate) {
                     return false;
                 }
-                if (expiration.after(delegate.expiry)) {
+                if (expiration.isAfter(delegate.expiry)) {
                     expiration = delegate.expiry;
                 }
                 delegates.put(delegateID, new S3FileDelegate(delegate.file, expiration, propagation));
@@ -103,21 +100,21 @@ class S3FileManager {
 }
 class S3FileDelegate {
     S3File file;
-    Date expiry;
+    LocalDateTime expiry;
     boolean propagate;
 
     public static String delegateID(String owner, String delegatedTo, String documentID) {
         return delegatedTo + "::" + S3File.documentID(owner, documentID);
     }
 
-    public S3FileDelegate(S3File file, Date expiry, boolean propagate) {
+    public S3FileDelegate(S3File file, LocalDateTime expiry, boolean propagate) {
         this.file = file;
         this.expiry = expiry;
         this.propagate = propagate;
     }
 
     public boolean expired() {
-        return new Date().after(expiry);
+        return LocalDateTime.now().isAfter(expiry);
     }
 
     @Override
