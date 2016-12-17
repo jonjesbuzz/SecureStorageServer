@@ -56,7 +56,7 @@ public class S3Client {
     private boolean closed;
 
     private static void printInfo(String s) {
-        // System.out.println("[Client] " + s);
+        System.out.println("[Client] " + s);
     }
     private static void printError(String s) {
         System.err.println("[Client] " + s);
@@ -322,17 +322,15 @@ public class S3Client {
         S3Client client = new S3Client();
         client.connect(username, certificate);
         if (username.equals("client1")) {
-            client.checkin(new File("/Users/jonathan/swap.c"), "swap.c", Security.ALL);
-            client.delegate("swap.c", "client2",120 * 60 * 60, true);
-            client.checkout("swap.c");
+            client.checkin(new File("Cryptography for Elections.pdf"), "file.pdf", Security.NONE);
+            client.delete("file.pdf");
         }
         if (username.equals("client2")) {
-            File file = client.checkout("swap.c", "client1");
-//            client.checkin(file, "swap.c", Security.INTEGRITY);
-            client.delegate("swap.c", "client3", 120 * 60 * 60, false);
+            client.checkout("c.txt", "client1");
         }
         if (username.equals("client3")) {
-            client.checkout("swap.c", "client2");
+            client.checkin(new File("c.txt"), "c.txt", Security.INTEGRITY);
+            client.delegate("c.txt", "client1", 120, true);
         }
         client.close();
         Instant i1 = Instant.now();

@@ -30,7 +30,7 @@ public class S3Server {
     }
 
     private static void printInfo(String s) {
-        // System.out.println("[Server] " + s);
+        System.out.println("[Server] " + s);
     }
     private static void printError(String s) {
         System.err.println("[Server] " + s);

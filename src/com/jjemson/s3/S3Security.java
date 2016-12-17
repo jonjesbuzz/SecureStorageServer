@@ -77,7 +77,7 @@ public class S3Security {
         java.io.FileInputStream fis = null;
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         try {
-            fis = new java.io.FileInputStream("./certs/" + storeName + "/" + storeName + ".jks");
+            fis = new java.io.FileInputStream("../certs/" + storeName + "/" + storeName + ".jks");
             ks.load(fis, password.toCharArray());
         } finally {
             if (fis != null) {
